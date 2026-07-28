@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+  <title id="title">Capability scorecard</title>
+  <desc id="desc">Ten capabilities compared. Both tools pass static scraping, SPA interaction, login-state reuse, and same-origin nested iframes. ego lite additionally passes cross-origin nested iframes, parallel local sessions, and human-agent isolation. browser-use additionally passes headless server use, cross-platform support, and cloud infrastructure.</desc>
+
+  <rect width="1200" height="660" rx="26" fill="#0B0E14"/>
+
+  <text x="56" y="64" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="700" fill="#E6EDF3">Capability scorecard</text>
+  <text x="1144" y="64" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8B949E">measured 2026-07-28</text>
+
+  <!-- column headers -->
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700">
+    <text x="850" y="108" text-anchor="middle" fill="#58A6FF">browser-use</text>
+    <text x="1060" y="108" text-anchor="middle" fill="#3FB950">ego lite</text>
+  </g>
+  <line x1="56" y1="122" x2="1144" y2="122" stroke="#1C2430" stroke-width="2"/>
+
+  <!-- rows: y starts 122, each 48 -->
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <!-- zebra stripes -->
+    <rect x="44" y="122" width="1112" height="48" fill="#11161F" rx="8"/>
+    <rect x="44" y="218" width="1112" height="48" fill="#11161F" rx="8"/>
+    <rect x="44" y="314" width="1112" height="48" fill="#11161F" rx="8"/>
+    <rect x="44" y="410" width="1112" height="48" fill="#11161F" rx="8"/>
+    <rect x="44" y="506" width="1112" height="48" fill="#11161F" rx="8"/>
+
+    <!-- row 1 -->
+    <text x="56" y="152" font-size="20" fill="#E6EDF3">Static scraping</text>
+    <circle cx="850" cy="146" r="13" fill="#12261A"/><text x="850" y="153" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+    <circle cx="1060" cy="146" r="13" fill="#12261A"/><text x="1060" y="153" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+
+    <!-- row 2 -->
+    <text x="56" y="200" font-size="20" fill="#E6EDF3">SPA interaction</text>
+    <circle cx="850" cy="194" r="13" fill="#12261A"/><text x="850" y="201" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+    <circle cx="1060" cy="194" r="13" fill="#12261A"/><text x="1060" y="201" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+
+    <!-- row 3 -->
+    <text x="56" y="248" font-size="20" fill="#E6EDF3">Real login-state reuse</text>
+    <text x="380" y="248" font-size="17" fill="#8B949E">attaches to Chrome vs migrated snapshot</text>
+    <circle cx="850" cy="242" r="13" fill="#12261A"/><text x="850" y="249" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+    <circle cx="1060" cy="242" r="13" fill="#12261A"/><text x="1060" y="249" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+
+    <!-- row 4 -->
+    <text x="56" y="296" font-size="20" fill="#E6EDF3">Same-origin nested iframes</text>
+    <circle cx="850" cy="290" r="13" fill="#12261A"/><text x="850" y="297" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+    <circle cx="1060" cy="290" r="13" fill="#12261A"/><text x="1060" y="297" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+
+    <!-- row 5 -->
+    <text x="56" y="344" font-size="20" fill="#E6EDF3">Cross-origin nested iframes</text>
+    <text x="380" y="344" font-size="17" fill="#8B949E">manual CDP attach vs snapshot pierces</text>
+    <circle cx="850" cy="338" r="13" fill="#2A2314"/><text x="850" y="345" text-anchor="middle" font-size="18" font-weight="700" fill="#D29922">!</text>
+    <circle cx="1060" cy="338" r="13" fill="#12261A"/><text x="1060" y="345" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+
+    <!-- row 6 -->
+    <text x="56" y="392" font-size="20" fill="#E6EDF3">Parallel local sessions</text>
+    <circle cx="850" cy="386" r="13" fill="#261417"/><text x="850" y="393" text-anchor="middle" font-size="18" font-weight="700" fill="#F85149">✕</text>
+    <circle cx="1060" cy="386" r="13" fill="#12261A"/><text x="1060" y="393" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+
+    <!-- row 7 -->
+    <text x="56" y="440" font-size="20" fill="#E6EDF3">Human–agent isolation</text>
+    <text x="380" y="440" font-size="17" fill="#8B949E">uses your tabs vs isolated Spaces</text>
+    <circle cx="850" cy="434" r="13" fill="#2A2314"/><text x="850" y="441" text-anchor="middle" font-size="18" font-weight="700" fill="#D29922">!</text>
+    <circle cx="1060" cy="434" r="13" fill="#12261A"/><text x="1060" y="441" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+
+    <!-- row 8 -->
+    <text x="56" y="488" font-size="20" fill="#E6EDF3">Headless server / CI</text>
+    <circle cx="850" cy="482" r="13" fill="#12261A"/><text x="850" y="489" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+    <circle cx="1060" cy="482" r="13" fill="#261417"/><text x="1060" y="489" text-anchor="middle" font-size="18" font-weight="700" fill="#F85149">✕</text>
+
+    <!-- row 9 -->
+    <text x="56" y="536" font-size="20" fill="#E6EDF3">Cross-platform</text>
+    <text x="380" y="536" font-size="17" fill="#8B949E">ego lite is macOS-only today</text>
+    <circle cx="850" cy="530" r="13" fill="#12261A"/><text x="850" y="537" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+    <circle cx="1060" cy="530" r="13" fill="#261417"/><text x="1060" y="537" text-anchor="middle" font-size="18" font-weight="700" fill="#F85149">✕</text>
+
+    <!-- row 10 -->
+    <text x="56" y="584" font-size="20" fill="#E6EDF3">Cloud infra: proxy, CAPTCHA</text>
+    <text x="380" y="584" font-size="17" fill="#8B949E">Browser Use Cloud, paid</text>
+    <circle cx="850" cy="578" r="13" fill="#12261A"/><text x="850" y="585" text-anchor="middle" font-size="18" font-weight="700" fill="#3FB950">✓</text>
+    <circle cx="1060" cy="578" r="13" fill="#261417"/><text x="1060" y="585" text-anchor="middle" font-size="18" font-weight="700" fill="#F85149">✕</text>
+  </g>
+
+  <text x="56" y="636" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#8B949E">✓ works out of the box · ! works with friction or caveats · ✕ not available. Details and raw output in the report below.</text>
+</svg>

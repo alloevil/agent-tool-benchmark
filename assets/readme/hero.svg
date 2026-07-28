@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">agent-tool-benchmark</title>
+  <desc id="desc">Hands-on, reproducible benchmarks of AI agent tooling: same machine, same tasks, full scripts.</desc>
+
+  <rect width="1200" height="320" rx="26" fill="#0B0E14"/>
+
+  <!-- measurement ruler motif along the top -->
+  <g stroke="#1C2430" stroke-width="2">
+    <line x1="56" y1="44" x2="1144" y2="44"/>
+    <line x1="56" y1="36" x2="56" y2="44"/>
+    <line x1="192" y1="39" x2="192" y2="44"/>
+    <line x1="328" y1="36" x2="328" y2="44"/>
+    <line x1="464" y1="39" x2="464" y2="44"/>
+    <line x1="600" y1="36" x2="600" y2="44"/>
+    <line x1="736" y1="39" x2="736" y2="44"/>
+    <line x1="872" y1="36" x2="872" y2="44"/>
+    <line x1="1008" y1="39" x2="1008" y2="44"/>
+    <line x1="1144" y1="36" x2="1144" y2="44"/>
+  </g>
+
+  <g id="title-block" transform="translate(56 96)">
+    <text x="0" y="0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" letter-spacing="6" fill="#8B949E">BENCHMARK SUITE</text>
+    <text x="0" y="62" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="52" font-weight="700" fill="#E6EDF3">agent-tool-benchmark</text>
+    <text x="0" y="110" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#8B949E">Hands-on benchmarks of AI agent tooling.</text>
+    <text x="0" y="144" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" fill="#8B949E">Same machine. Same tasks. Full scripts, rerunnable.</text>
+    <g transform="translate(0 176)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#3FB950">
+      <text x="0" y="16">$ bash tasks/ego/02-todomvc.sh</text>
+    </g>
+  </g>
+
+  <!-- proof: real measured result, TodoMVC interaction -->
+  <g id="project-proof" transform="translate(740 84)">
+    <rect x="0" y="0" width="404" height="196" rx="14" fill="#11161F" stroke="#1C2430" stroke-width="1.5"/>
+    <text x="24" y="38" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20" font-weight="600" fill="#E6EDF3">SPA interaction, wall time</text>
+    <text x="380" y="38" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8B949E">lower = better</text>
+
+    <g transform="translate(24 62)">
+      <text x="0" y="16" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8B949E">browser-use</text>
+      <rect x="130" y="0" width="226" height="22" rx="5" fill="#58A6FF"/>
+      <text x="350" y="17" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" fill="#0B0E14">9.1s</text>
+    </g>
+    <g transform="translate(24 100)">
+      <text x="0" y="16" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8B949E">ego lite</text>
+      <rect x="130" y="0" width="33" height="22" rx="5" fill="#3FB950"/>
+      <text x="171" y="17" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" fill="#3FB950">1.3s</text>
+    </g>
+
+    <g transform="translate(24 156)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" fill="#8B949E">
+      <text x="0" y="14">Single run · Apple M5 Max · 2026-07-28</text>
+    </g>
+  </g>
+</svg>

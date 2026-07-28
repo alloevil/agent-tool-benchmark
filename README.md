@@ -1,23 +1,28 @@
-# agent-tool-benchmark
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="agent-tool-benchmark: hands-on benchmarks of AI agent tooling. Same machine, same tasks, full scripts.">
+</p>
 
-对各类 AI agent 工具做同条件、可复现的实测对比。每个 benchmark 独立成目录，附完整方法、脚本与原始结果。
-
-Hands-on, reproducible benchmarks of AI agent tooling. Each benchmark lives in its own directory with methodology, scripts, and raw results.
+Every benchmark here is a real run on real tools — same machine, same task suite, same hour. Each one ships with its full methodology, rerunnable task scripts, fixtures, and honest limitations, so you can reproduce the numbers instead of trusting a vendor chart.
 
 ## Benchmarks
 
-| 类别 | 对比 | 日期 | 结论摘要 |
-|---|---|---|---|
-| [browser](browser/) | [ego lite vs browser-use CLI](browser/ego-lite-vs-browser-use/) | 2026-07-28 | 本机日常任务 ego lite 占优（跨域 iframe 穿透、并行 Space、零干扰）；服务器/CI/跨平台场景 browser-use 仍是唯一选择 |
+| Category | Comparison | Date | Verdict |
+| --- | --- | --- | --- |
+| [browser](browser/) | [ego lite vs browser-use CLI](browser/ego-lite-vs-browser-use/) | 2026-07-28 | ego lite wins for local everyday agent tasks (cross-origin iframe piercing, parallel Spaces, zero tab interference); browser-use CLI remains the only option for servers, CI, and cross-platform |
 
-## 原则
+## Principles
 
-- **同机同任务**：同一台机器、同一套任务、同一时段运行。
-- **可复现**：所有任务脚本与 fixture 入库，`bash` 即可重跑。
-- **诚实标注局限**：单次运行、网络波动、未覆盖的模式（如 LLM 自主规划）都写明。
+- **Same machine, same tasks.** Every tool in a comparison runs the identical task suite on the identical hardware, within the same session.
+- **Reproducible.** All task scripts and fixtures are committed. `bash tasks/<tool>/<task>.sh` reruns any measurement.
+- **Honest about limits.** Single runs, network variance, and untested modes (such as autonomous LLM planning) are stated, not hidden.
+- **No invented numbers.** Every figure in every chart comes from a captured run. Vendor claims are labeled as claims.
 
-## 计划中
+## Planned
 
-- Agent 搜索工具（web search API / scraper）
-- Agent 终端与沙箱执行环境
-- 文档/表格类 agent 工具
+- Agent web-search tools (search APIs and scrapers)
+- Agent terminal and sandbox execution environments
+- Document and spreadsheet agent tools
+
+## License
+
+MIT

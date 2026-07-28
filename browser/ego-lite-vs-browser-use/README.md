@@ -1,78 +1,86 @@
-# agent-browser-benchmark
+# ego lite vs browser-use CLI
 
-ego lite vs browser-use CLI — 同机、同任务的 agent 浏览器实测对比。
+Same-machine, same-task benchmark of two agent-browser tools, run on 2026-07-28.
 
-**TL;DR (English):** Hands-on benchmark of two agent-browser tools on the same Mac and the same 5-task suite. Both passed basic scraping, SPA interaction, and login-state reuse. Differentiators: ego lite's `snapshotText()` pierces **cross-origin nested iframes** transparently (browser-use requires hand-written CDP `Target.attachToTarget`), and ego lite runs **parallel isolated Spaces** locally (browser-use local mode shares your real Chrome tabs). browser-use retains cross-platform / headless-server / cloud-infra advantages.
+**TL;DR** — Both tools passed basic scraping, SPA interaction, and real login-state reuse. The gaps are structural: ego lite's `snapshotText()` pierces **cross-origin nested iframes** transparently where browser-use needs hand-written CDP target attachment, and ego lite runs **parallel isolated Spaces** locally while browser-use local mode works inside your real Chrome tabs. browser-use keeps the server, CI, cross-platform, and cloud-infrastructure story to itself.
 
-## 环境
+<p align="center">
+  <img src="./assets/scorecard.svg" width="100%" alt="Capability scorecard: both tools pass static scraping, SPA interaction, login-state reuse, and same-origin nested iframes. ego lite additionally passes cross-origin nested iframes, parallel local sessions, and human-agent isolation. browser-use additionally passes headless server use, cross-platform support, and cloud infrastructure.">
+</p>
 
-| 项 | 值 |
-|---|---|
-| 日期 | 2026-07-28 |
-| 机器 | Apple M5 Max, macOS 26.5 (Darwin 25.5.0) |
-| browser-use CLI | 0.1.8（attach 本机真实 Chrome，CDP 模式） |
+<p align="center">
+  <img src="./assets/timings.svg" width="100%" alt="Wall-clock timings: Hacker News scrape 6.4 seconds for browser-use versus 9.7 for ego lite; TodoMVC interaction 9.1 versus 1.3; two parallel tasks unsupported locally by browser-use versus 2.4 seconds total on ego lite.">
+</p>
+
+## Environment
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-07-28 |
+| Machine | Apple M5 Max, macOS 26.5 (Darwin 25.5.0) |
+| browser-use CLI | 0.1.8, attached to the local real Chrome over CDP |
 | ego lite | ego-browser 0.4.5.5 / Chromium 150.0.7871.101 / Node v24.18.0 |
-| ego 初始化 | 首次启动迁移了 Chrome 数据（登录态 + localStorage） |
+| ego lite setup | First launch migrated Chrome data (login state + localStorage) |
 
-两者均为脚本直驱（agent 写代码一次执行多步），非"LLM 自主规划"模式，因此测的是**工具能力与工效**，不是模型成功率。
+Both tools were driven by scripts (the agent writes code that executes multiple steps in one pass), not by autonomous LLM planning. This measures **tool capability and ergonomics**, not model success rates.
 
-## 任务设计
+## Task design
 
-| # | 任务 | 考察点 |
-|---|---|---|
-| 1 | Hacker News top 5 标题+分数 | 静态抓取基线 |
-| 2 | TodoMVC：添 3 项、勾 1 项、读计数 | JS 重交互 / 表单可靠性 |
-| 3 | 打开 github.com 读当前登录用户名 | 真实登录态复用 |
-| 4a | 同源双层嵌套 iframe 提取秘密串 | 帧穿透 |
-| 4b | **跨域**双层嵌套 iframe 提取秘密串 | OOPIF 处理（ego 宣称强项） |
-| 5 | 并行 / 干扰性观察 | 人机共用浏览器体验 |
+| # | Task | What it probes |
+| --- | --- | --- |
+| 1 | Hacker News: top 5 titles + points | Static scraping baseline |
+| 2 | TodoMVC: add 3 items, toggle 1, read the count | JS-heavy interaction, form reliability |
+| 3 | Open github.com, read the logged-in username | Real login-state reuse |
+| 4a | Extract a secret string from a same-origin double-nested iframe | Frame piercing |
+| 4b | Same, but the inner iframe is **cross-origin** | OOPIF handling (ego lite's claimed strength) |
+| 5 | Parallel run + interference observation | Sharing a browser with a human |
 
-iframe fixture 见 [`fixtures/`](fixtures/)，用 `python3 -m http.server 8973`（外层）+ `8974`（跨域内层）本地服务。
+The iframe fixtures live in [`fixtures/`](fixtures/), served locally with `python3 -m http.server 8973` (outer) and `8974` (cross-origin inner).
 
-## 结果
+## Results
 
-| 任务 | browser-use CLI | ego lite |
-|---|---|---|
-| 1. HN top 5 | ✅ 6.4s / 2 次调用 | ✅ 9.7s / 1 次调用（含建 Space） |
-| 2. TodoMVC | ✅ 9.1s | ✅ 1.3s（净状态） |
-| 3. GitHub 登录态 | ✅ 拿到用户名 | ✅ 拿到用户名（迁移数据生效） |
-| 4a. 同源 iframe | ✅ `contentDocument` 直接穿透 | ✅ 同左 |
-| 4b. 跨域 iframe | ⚠️ `js()` 返回 None；须手写 CDP `Target.attachToTarget` 才拿到 | ✅ **`snapshotText()` 语义树直接呈现内层文本，零额外操作** |
-| 5. 并行 | ✗ 本地共用真实 Chrome 标签页；并行需其云服务 | ✅ 两 Space 并发（1.5s / 2.4s），用户窗口全程不动 |
+| Task | browser-use CLI | ego lite |
+| --- | --- | --- |
+| 1. HN top 5 | ✅ 6.4s, 2 invocations | ✅ 9.7s, 1 invocation (includes Space creation) |
+| 2. TodoMVC | ✅ 9.1s | ✅ 1.3s (clean state) |
+| 3. GitHub login | ✅ got the username | ✅ got the username (migrated data works) |
+| 4a. Same-origin iframes | ✅ `contentDocument` pierces directly | ✅ same |
+| 4b. Cross-origin iframes | ⚠️ `js()` returns None; needs hand-written CDP `Target.attachToTarget` | ✅ **`snapshotText()` surfaces the inner text in the semantic tree, zero extra work** |
+| 5. Parallelism | ✗ shares your real Chrome tabs; parallel requires their paid cloud | ✅ two Spaces concurrently (1.5s / 2.4s), user's windows untouched |
 
-计时为 `time` 实测 wall time，含 CLI 启动开销；绝对值受网络波动影响，量级和相对关系可参考。
+Timings are `time` wall-clock measurements including CLI startup. Absolute values are subject to network variance; magnitudes and relative ordering are the signal.
 
-## 关键发现
+## Key findings
 
-1. **跨域嵌套 iframe 是真实差距。** browser-use 路径要求 agent 理解 OOPIF 与 CDP target 附着，模型实操中容易在此多轮试错；ego 一次 `snapshotText()` 即得。
-2. **Space 隔离 + 本地并行是 ego 独有。** browser-use 本地模式所有任务在用户 Chrome 里开关标签页，肉眼可见跳动；ego 全程后台 Space。
-3. **ego 的 Chrome 迁移是快照式复制。** 连测试残留的 TodoMVC localStorage 都带了过来（首轮测试因此出现 6 条重复待办），之后两浏览器状态各自独立演化——依赖会话时效的站点（如银行）需注意。
-4. **工效小坑。** browser-use：`close_tab("current")` 别名无效（须传真实 target id）、帮助文档示例的 `evaluate` 实际叫 `js`。ego：首次必须 GUI onboarding，无法纯 CLI 完成；仅支持 macOS。
+1. **Cross-origin nested iframes are a real gap.** The browser-use path requires the agent to understand OOPIF and CDP target attachment — an easy place for a model to burn rounds in trial and error. ego lite delivers it in a single `snapshotText()`.
+2. **Space isolation + local parallelism is unique to ego lite.** browser-use local mode opens and closes tabs inside your Chrome, visibly; ego lite runs everything in background Spaces.
+3. **ego lite's Chrome migration is a snapshot copy.** It even carried over the TodoMVC localStorage left by our browser-use run (the first ego pass showed 6 duplicated todos because of it). After migration the two browsers diverge independently — mind session-sensitive sites like banking.
+4. **Ergonomic paper cuts.** browser-use: `close_tab("current")` alias doesn't resolve (needs a real target id), and the help text's `evaluate` is actually named `js`. ego lite: first run requires GUI onboarding — no pure-CLI path — and it is macOS-only.
 
-## 结论
+## Verdict
 
-- **本机日常 agent 任务（macOS）**：ego lite 更好——登录态、隔离、并行、iframe 穿透全部实测占优。
-- **服务器 / CI / 跨平台 / 需要代理与 CAPTCHA 基建**：browser-use CLI 仍是唯一选择。
-- 两者免费且不互斥，按任务场景分工使用。
+- **Local everyday agent tasks (macOS):** ego lite — login state, isolation, parallelism, and iframe piercing all measured better.
+- **Servers / CI / cross-platform / proxy + CAPTCHA infrastructure:** browser-use CLI is the only option.
+- Both are free and not mutually exclusive; split them by scenario.
 
-## 复现
+## Reproduce
 
 ```bash
 # browser-use
 uv tool install --python 3.12 browser-use
-bash tasks/browser-use/01-hn.sh   # 依次 01–04
+bash tasks/browser-use/01-hn.sh   # then 02-04
 
-# ego lite（macOS，需先装 app 并完成 GUI onboarding）
-# 下载: https://github.com/citrolabs/ego-lite
-bash tasks/ego/01-hn.sh           # 依次 01–05
+# ego lite (macOS; install the app and finish GUI onboarding first)
+# download: https://github.com/citrolabs/ego-lite
+bash tasks/ego/01-hn.sh           # then 02-05
 
-# iframe fixture
+# iframe fixtures
 python3 -m http.server 8973 --directory fixtures &
 python3 -m http.server 8974 --directory fixtures &
 ```
 
-## 局限
+## Limitations
 
-- 单机单次运行，非多次取均值；网络波动未控制。
-- 任务由人工编写脚本完成，未测"LLM 自主规划"模式下的 token 消耗与成功率（ego 官方 2.5× 提速宣称针对该模式，本测不构成验证或反驳）。
-- ego 官方对比表称 browser-use 不继承 Chrome 数据；实测其本地模式 attach 真实 Chrome 同样可用登录态，真实差异在**隔离性**而非登录态有无。
+- Single machine, single run per task — no averaging; network variance uncontrolled.
+- Tasks were completed by hand-written scripts. Autonomous LLM-planning mode (token cost, success rate) was not measured; ego's official 2.5× speed claim targets that mode, so this benchmark neither confirms nor refutes it.
+- ego's official comparison table says browser-use does not inherit Chrome data; in our test browser-use local mode attaches to the real Chrome and login state simply works. The real difference is **isolation**, not login-state availability.
