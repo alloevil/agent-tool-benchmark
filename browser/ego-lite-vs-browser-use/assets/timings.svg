@@ -10,7 +10,7 @@
   <!-- legend -->
   <g transform="translate(56 92)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18">
     <rect x="0" y="0" width="18" height="18" rx="4" fill="#58A6FF"/>
-    <text x="26" y="15" fill="#8B949E">browser-use CLI 0.1.8</text>
+    <text x="26" y="15" fill="#8B949E">browser-use 0.13.7</text>
     <rect x="260" y="0" width="18" height="18" rx="4" fill="#3FB950"/>
     <text x="286" y="15" fill="#8B949E">ego lite 0.4.5.5</text>
   </g>

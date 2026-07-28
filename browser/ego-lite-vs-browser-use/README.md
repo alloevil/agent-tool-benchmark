@@ -18,7 +18,7 @@ Same-machine, same-task benchmark of two agent-browser tools, run on 2026-07-28.
 | --- | --- |
 | Date | 2026-07-28 |
 | Machine | Apple M5 Max, macOS 26.5 (Darwin 25.5.0) |
-| browser-use CLI | 0.1.8, attached to the local real Chrome over CDP |
+| browser-use CLI | browser-use 0.13.7 (Browser Harness 0.1.8), attached to the local real Chrome over CDP |
 | ego lite | ego-browser 0.4.5.5 / Chromium 150.0.7871.101 / Node v24.18.0 |
 | ego lite setup | First launch migrated Chrome data (login state + localStorage) |
 
