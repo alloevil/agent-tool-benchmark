@@ -2,6 +2,11 @@
   <img src="./assets/readme/hero.svg" width="100%" alt="agent-tool-benchmark: hands-on benchmarks of AI agent tooling. Same machine, same tasks, full scripts.">
 </p>
 
+<p align="center">
+  <a href="https://github.com/alloevil/agent-tool-benchmark/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/alloevil/agent-tool-benchmark?logo=github&color=blue"></a>
+  <img alt="License" src="https://img.shields.io/github/license/alloevil/agent-tool-benchmark?color=green">
+</p>
+
 Every benchmark here is a real run on real tools — same machine, same task suite, same hour. Each one ships with its full methodology, rerunnable task scripts, fixtures, and honest limitations, so you can reproduce the numbers instead of trusting a vendor chart.
 
 ## Benchmarks
