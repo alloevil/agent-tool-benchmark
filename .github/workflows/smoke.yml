@@ -1,0 +1,35 @@
+name: Smoke
+# Structural check for the benchmark suites: every task script parses under bash -n and
+# every tool under a suite has the same task set, so "same tasks" stays true as suites grow.
+# Real timings are captured on a fixed local machine by design and are not reproduced in CI.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: bash -n every task script
+        run: |
+          set -e
+          find . -path '*/tasks/*' -name '*.sh' -not -path './.git/*' -print0 | xargs -0 -n1 bash -n
+          n=$(find . -path '*/tasks/*' -name '*.sh' -not -path './.git/*' | wc -l)
+          echo "parsed $n task scripts"; test "$n" -gt 0
+      - name: task sets match across tools in each suite
+        run: |
+          set -e
+          for suite in $(find . -type d -name tasks -not -path './.git/*'); do
+            ref=""
+            for tool in "$suite"/*/; do
+              set=$(ls "$tool" | sed -E 's/^([0-9]+)-.*/\1/' | sort | tr '\n' ' ')
+              if [ -z "$ref" ]; then ref="$set"; elif [ "$set" != "$ref" ]; then
+                echo "::warning::$suite: task ids differ for $(basename "$tool"): [$set] vs [$ref]"; fi
+            done
+            echo "$suite: $ref"
+          done
