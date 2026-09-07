@@ -1,0 +1,609 @@
+{
+  "corpus": {
+    "repo": "psf/requests",
+    "tag": "v2.32.3",
+    "commit": "0e322af87745eff34caffe4df68456ebc20d9068",
+    "scope": "src/requests/*.py"
+  },
+  "zg_index": {
+    "build_time_s": 7.0,
+    "disk_bytes": 5790627
+  },
+  "config": {
+    "zg_limit": 10,
+    "reps": 3,
+    "embedding": "local/potion-retrieval-32m",
+    "zg_mode": "direct",
+    "tokenizer": "cl100k_base"
+  },
+  "summary": {
+    "overall": {
+      "zg-hybrid": {
+        "n": 12,
+        "file_hit@5": 11,
+        "file_hit@10": 11,
+        "strict_hit@5": 11,
+        "strict_hit@10": 11,
+        "median_tokens": 362.5,
+        "total_tokens": 4378,
+        "median_latency_s": 1.748
+      },
+      "zg-fts": {
+        "n": 12,
+        "file_hit@5": 12,
+        "file_hit@10": 12,
+        "strict_hit@5": 10,
+        "strict_hit@10": 10,
+        "median_tokens": 340.0,
+        "total_tokens": 4160,
+        "median_latency_s": 1.467
+      },
+      "rg": {
+        "n": 12,
+        "file_hit@5": 6,
+        "file_hit@10": 6,
+        "strict_hit@5": 6,
+        "strict_hit@10": 6,
+        "median_tokens": 45.5,
+        "total_tokens": 1890,
+        "median_latency_s": 0.005
+      }
+    },
+    "by_tier": {
+      "named-direct": {
+        "zg-hybrid": {
+          "n": 4,
+          "file_hit@5": 4,
+          "file_hit@10": 4,
+          "strict_hit@5": 4,
+          "strict_hit@10": 4,
+          "median_tokens": 360.5,
+          "total_tokens": 1422,
+          "median_latency_s": 1.75
+        },
+        "zg-fts": {
+          "n": 4,
+          "file_hit@5": 4,
+          "file_hit@10": 4,
+          "strict_hit@5": 4,
+          "strict_hit@10": 4,
+          "median_tokens": 335.5,
+          "total_tokens": 1346,
+          "median_latency_s": 1.466
+        },
+        "rg": {
+          "n": 4,
+          "file_hit@5": 4,
+          "file_hit@10": 4,
+          "strict_hit@5": 4,
+          "strict_hit@10": 4,
+          "median_tokens": 388.5,
+          "total_tokens": 1547,
+          "median_latency_s": 0.006
+        }
+      },
+      "vocab-gap": {
+        "zg-hybrid": {
+          "n": 4,
+          "file_hit@5": 3,
+          "file_hit@10": 3,
+          "strict_hit@5": 3,
+          "strict_hit@10": 3,
+          "median_tokens": 381.5,
+          "total_tokens": 1522,
+          "median_latency_s": 1.762
+        },
+        "zg-fts": {
+          "n": 4,
+          "file_hit@5": 4,
+          "file_hit@10": 4,
+          "strict_hit@5": 3,
+          "strict_hit@10": 3,
+          "median_tokens": 358.0,
+          "total_tokens": 1415,
+          "median_latency_s": 1.474
+        },
+        "rg": {
+          "n": 4,
+          "file_hit@5": 0,
+          "file_hit@10": 0,
+          "strict_hit@5": 0,
+          "strict_hit@10": 0,
+          "median_tokens": 21.5,
+          "total_tokens": 82,
+          "median_latency_s": 0.005
+        }
+      },
+      "conceptual": {
+        "zg-hybrid": {
+          "n": 4,
+          "file_hit@5": 4,
+          "file_hit@10": 4,
+          "strict_hit@5": 4,
+          "strict_hit@10": 4,
+          "median_tokens": 361.0,
+          "total_tokens": 1434,
+          "median_latency_s": 1.747
+        },
+        "zg-fts": {
+          "n": 4,
+          "file_hit@5": 4,
+          "file_hit@10": 4,
+          "strict_hit@5": 3,
+          "strict_hit@10": 3,
+          "median_tokens": 344.5,
+          "total_tokens": 1399,
+          "median_latency_s": 1.474
+        },
+        "rg": {
+          "n": 4,
+          "file_hit@5": 2,
+          "file_hit@10": 2,
+          "strict_hit@5": 2,
+          "strict_hit@10": 2,
+          "median_tokens": 34.5,
+          "total_tokens": 261,
+          "median_latency_s": 0.004
+        }
+      }
+    }
+  },
+  "per_query": [
+    {
+      "id": "redirects",
+      "tier": "named-direct",
+      "query": "where are HTTP redirects followed and resolved",
+      "rg_keyword": "redirect",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 3,
+          "tokens": 361,
+          "latency_s": 1.756
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 5,
+          "tokens": 331,
+          "latency_s": 1.47
+        },
+        "rg": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 16,
+          "n_distinct_files": 4,
+          "tokens": 332,
+          "latency_s": 0.005
+        }
+      }
+    },
+    {
+      "id": "digest-auth",
+      "tier": "named-direct",
+      "query": "how the digest authentication challenge header is constructed",
+      "rg_keyword": "digest",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 5,
+          "tokens": 339,
+          "latency_s": 1.837
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 5,
+          "tokens": 335,
+          "latency_s": 1.464
+        },
+        "rg": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 5,
+          "n_distinct_files": 1,
+          "tokens": 115,
+          "latency_s": 0.008
+        }
+      }
+    },
+    {
+      "id": "timeout",
+      "tier": "named-direct",
+      "query": "where the timeout value is validated and applied when sending a request",
+      "rg_keyword": "timeout",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 4,
+          "tokens": 362,
+          "latency_s": 1.744
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 6,
+          "tokens": 344,
+          "latency_s": 1.468
+        },
+        "rg": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 31,
+          "n_distinct_files": 4,
+          "tokens": 655,
+          "latency_s": 0.006
+        }
+      }
+    },
+    {
+      "id": "no-proxy",
+      "tier": "named-direct",
+      "query": "where the NO_PROXY environment variable is checked to bypass proxies",
+      "rg_keyword": "no_proxy",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 3,
+          "tokens": 360,
+          "latency_s": 1.733
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 3,
+          "tokens": 336,
+          "latency_s": 1.423
+        },
+        "rg": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 21,
+          "n_distinct_files": 2,
+          "tokens": 445,
+          "latency_s": 0.006
+        }
+      }
+    },
+    {
+      "id": "connection-pooling",
+      "tier": "vocab-gap",
+      "query": "where connection reuse and pooling is set up",
+      "rg_keyword": "pooling",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 4,
+          "tokens": 382,
+          "latency_s": 1.798
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 6,
+          "tokens": 353,
+          "latency_s": 1.436
+        },
+        "rg": {
+          "file_hit@5": false,
+          "file_hit@10": false,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 1,
+          "n_distinct_files": 1,
+          "tokens": 22,
+          "latency_s": 0.006
+        }
+      }
+    },
+    {
+      "id": "url-credentials",
+      "tier": "vocab-gap",
+      "query": "how login credentials embedded in the URL are extracted",
+      "rg_keyword": "credentials",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": false,
+          "file_hit@10": false,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 10,
+          "n_distinct_files": 4,
+          "tokens": 393,
+          "latency_s": 1.757
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 10,
+          "n_distinct_files": 5,
+          "tokens": 372,
+          "latency_s": 1.495
+        },
+        "rg": {
+          "file_hit@5": false,
+          "file_hit@10": false,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 1,
+          "n_distinct_files": 1,
+          "tokens": 22,
+          "latency_s": 0.007
+        }
+      }
+    },
+    {
+      "id": "body-rewind",
+      "tier": "vocab-gap",
+      "query": "where the request body is rewound so it can be resent after a redirect",
+      "rg_keyword": "resend",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 4,
+          "tokens": 366,
+          "latency_s": 1.742
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 6,
+          "tokens": 327,
+          "latency_s": 1.488
+        },
+        "rg": {
+          "file_hit@5": false,
+          "file_hit@10": false,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 1,
+          "n_distinct_files": 1,
+          "tokens": 17,
+          "latency_s": 0.004
+        }
+      }
+    },
+    {
+      "id": "auth-leak",
+      "tier": "vocab-gap",
+      "query": "how it avoids leaking the Authorization header when redirected to a different host",
+      "rg_keyword": "leak",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 5,
+          "tokens": 381,
+          "latency_s": 1.768
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 3,
+          "tokens": 363,
+          "latency_s": 1.461
+        },
+        "rg": {
+          "file_hit@5": false,
+          "file_hit@10": false,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 1,
+          "n_distinct_files": 1,
+          "tokens": 21,
+          "latency_s": 0.004
+        }
+      }
+    },
+    {
+      "id": "text-encoding",
+      "tier": "conceptual",
+      "query": "how does it decide what text encoding to use for the response body when none is declared",
+      "rg_keyword": "charset",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 3,
+          "tokens": 363,
+          "latency_s": 1.746
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 4,
+          "tokens": 335,
+          "latency_s": 1.481
+        },
+        "rg": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 8,
+          "n_distinct_files": 2,
+          "tokens": 192,
+          "latency_s": 0.004
+        }
+      }
+    },
+    {
+      "id": "content-length",
+      "tier": "conceptual",
+      "query": "how the upload size of a file-like request body is figured out",
+      "rg_keyword": "size",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 4,
+          "tokens": 387,
+          "latency_s": 1.723
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 10,
+          "n_distinct_files": 3,
+          "tokens": 354,
+          "latency_s": 1.461
+        },
+        "rg": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 3,
+          "n_distinct_files": 2,
+          "tokens": 69,
+          "latency_s": 0.004
+        }
+      }
+    },
+    {
+      "id": "response-truthiness",
+      "tier": "conceptual",
+      "query": "which code decides whether a response object counts as truthy in an if statement",
+      "rg_keyword": "truthy",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 4,
+          "tokens": 359,
+          "latency_s": 1.747
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 4,
+          "tokens": 385,
+          "latency_s": 1.487
+        },
+        "rg": {
+          "file_hit@5": false,
+          "file_hit@10": false,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 0,
+          "n_distinct_files": 0,
+          "tokens": 0,
+          "latency_s": 0.004
+        }
+      }
+    },
+    {
+      "id": "pagination-links",
+      "tier": "conceptual",
+      "query": "how pagination links from the Link response header are parsed and exposed",
+      "rg_keyword": "pagination",
+      "tools": {
+        "zg-hybrid": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 5,
+          "tokens": 325,
+          "latency_s": 1.748
+        },
+        "zg-fts": {
+          "file_hit@5": true,
+          "file_hit@10": true,
+          "strict_hit@5": true,
+          "strict_hit@10": true,
+          "n_hits": 10,
+          "n_distinct_files": 6,
+          "tokens": 325,
+          "latency_s": 1.466
+        },
+        "rg": {
+          "file_hit@5": false,
+          "file_hit@10": false,
+          "strict_hit@5": false,
+          "strict_hit@10": false,
+          "n_hits": 0,
+          "n_distinct_files": 0,
+          "tokens": 0,
+          "latency_s": 0.006
+        }
+      }
+    }
+  ]
+}

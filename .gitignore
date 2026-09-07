@@ -3,3 +3,4 @@ retrieval/code-search/bin/
 __pycache__/
 _work/
 _probe/
+.zvec-grep/

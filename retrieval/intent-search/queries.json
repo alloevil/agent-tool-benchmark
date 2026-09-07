@@ -1,0 +1,119 @@
+{
+  "comment": "12 natural-language intent queries against psf/requests v2.32.3 (src/requests/ only). rg_keyword is pre-committed: the single word an agent unfamiliar with the codebase's naming would plausibly grep first, chosen from the query's own vocabulary BEFORE running any tool. ground_truth lists acceptable answer locations; a location is (file, function, start-end lines), verified by AST against the pinned checkout. Tiers: named-direct (intent word literally appears in the relevant code), vocab-gap (the natural intent word appears nowhere useful in the code), conceptual (the question is about behavior, not any nameable thing).",
+  "queries": [
+    {
+      "id": "redirects",
+      "tier": "named-direct",
+      "query": "where are HTTP redirects followed and resolved",
+      "rg_keyword": "redirect",
+      "ground_truth": [
+        {"file": "src/requests/sessions.py", "function": "resolve_redirects", "lines": [159, 280]},
+        {"file": "src/requests/sessions.py", "function": "get_redirect_target", "lines": [107, 125]}
+      ]
+    },
+    {
+      "id": "digest-auth",
+      "tier": "named-direct",
+      "query": "how the digest authentication challenge header is constructed",
+      "rg_keyword": "digest",
+      "ground_truth": [
+        {"file": "src/requests/auth.py", "function": "build_digest_header", "lines": [126, 234]}
+      ]
+    },
+    {
+      "id": "timeout",
+      "tier": "named-direct",
+      "query": "where the timeout value is validated and applied when sending a request",
+      "rg_keyword": "timeout",
+      "ground_truth": [
+        {"file": "src/requests/adapters.py", "function": "send", "lines": [613, 719]}
+      ]
+    },
+    {
+      "id": "no-proxy",
+      "tier": "named-direct",
+      "query": "where the NO_PROXY environment variable is checked to bypass proxies",
+      "rg_keyword": "no_proxy",
+      "ground_truth": [
+        {"file": "src/requests/utils.py", "function": "should_bypass_proxies", "lines": [765, 823]}
+      ]
+    },
+    {
+      "id": "connection-pooling",
+      "tier": "vocab-gap",
+      "query": "where connection reuse and pooling is set up",
+      "rg_keyword": "pooling",
+      "ground_truth": [
+        {"file": "src/requests/adapters.py", "function": "init_poolmanager", "lines": [240, 264]}
+      ]
+    },
+    {
+      "id": "url-credentials",
+      "tier": "vocab-gap",
+      "query": "how login credentials embedded in the URL are extracted",
+      "rg_keyword": "credentials",
+      "ground_truth": [
+        {"file": "src/requests/utils.py", "function": "get_auth_from_url", "lines": [1018, 1031]}
+      ]
+    },
+    {
+      "id": "body-rewind",
+      "tier": "vocab-gap",
+      "query": "where the request body is rewound so it can be resent after a redirect",
+      "rg_keyword": "resend",
+      "ground_truth": [
+        {"file": "src/requests/utils.py", "function": "rewind_body", "lines": [1081, 1096]}
+      ]
+    },
+    {
+      "id": "auth-leak",
+      "tier": "vocab-gap",
+      "query": "how it avoids leaking the Authorization header when redirected to a different host",
+      "rg_keyword": "leak",
+      "ground_truth": [
+        {"file": "src/requests/sessions.py", "function": "should_strip_auth", "lines": [127, 157]},
+        {"file": "src/requests/sessions.py", "function": "rebuild_auth", "lines": [282, 300]}
+      ]
+    },
+    {
+      "id": "text-encoding",
+      "tier": "conceptual",
+      "query": "how does it decide what text encoding to use for the response body when none is declared",
+      "rg_keyword": "charset",
+      "ground_truth": [
+        {"file": "src/requests/models.py", "function": "text", "lines": [909, 945]},
+        {"file": "src/requests/models.py", "function": "apparent_encoding", "lines": [789, 797]}
+      ]
+    },
+    {
+      "id": "content-length",
+      "tier": "conceptual",
+      "query": "how the upload size of a file-like request body is figured out",
+      "rg_keyword": "size",
+      "ground_truth": [
+        {"file": "src/requests/utils.py", "function": "super_len", "lines": [135, 201]},
+        {"file": "src/requests/models.py", "function": "prepare_content_length", "lines": [572, 586]}
+      ]
+    },
+    {
+      "id": "response-truthiness",
+      "tier": "conceptual",
+      "query": "which code decides whether a response object counts as truthy in an if statement",
+      "rg_keyword": "truthy",
+      "ground_truth": [
+        {"file": "src/requests/models.py", "function": "__bool__", "lines": [730, 738]},
+        {"file": "src/requests/models.py", "function": "ok", "lines": [754, 767]}
+      ]
+    },
+    {
+      "id": "pagination-links",
+      "tier": "conceptual",
+      "query": "how pagination links from the Link response header are parsed and exposed",
+      "rg_keyword": "pagination",
+      "ground_truth": [
+        {"file": "src/requests/models.py", "function": "links", "lines": [980, 995]},
+        {"file": "src/requests/utils.py", "function": "parse_header_links", "lines": [914, 948]}
+      ]
+    }
+  ]
+}
