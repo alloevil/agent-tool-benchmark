@@ -1,0 +1,6 @@
+[
+  {
+    "old_str": "    if not isinstance(a, (int, float)):\n        raise TypeError(\"a must be a number\")",
+    "new_str": "    if not isinstance(a, (int, float)):\n        raise TypeError(\"a must be numeric\")"
+  }
+]

@@ -1,0 +1,143 @@
+{
+  "_comment": "Ground truth for the code-search recall benchmark. All paths are relative to corpus/. Categories: true_sites = lines a reference-finder MUST return (calls, alias-mediated constructor calls, dict registrations, getattr strings - anything you would have to edit when changing the symbol); neutral_sites = legitimate non-call references (definition, imports, re-exports) that neither reward nor penalize a tool; trap_sites = textual matches that are NOT uses of the target symbol (comments, docstrings, string literals, same-named methods on unrelated classes). Every site carries the token that must literally appear on that line; run.py verifies this at startup.",
+  "symbols": [
+    {
+      "name": "handler",
+      "kind": "function",
+      "definition": { "file": "miniproj/handlers/impl.py", "line": 4 },
+      "true_sites": [
+        { "file": "app.py", "line": 18, "token": "handler", "why": "direct call, imported via double re-export miniproj/__init__ <- handlers/__init__ <- impl" },
+        { "file": "miniproj/dispatch.py", "line": 15, "token": "handler", "why": "call inside list comprehension" },
+        { "file": "miniproj/dispatch.py", "line": 28, "token": "handler", "why": "direct call (fallback branch)" },
+        { "file": "test_miniproj.py", "line": 11, "token": "handler", "why": "direct call in test" }
+      ],
+      "neutral_sites": [
+        { "file": "miniproj/handlers/impl.py", "line": 4, "token": "handler", "why": "definition" },
+        { "file": "miniproj/handlers/__init__.py", "line": 3, "token": "handler", "why": "re-export" },
+        { "file": "miniproj/__init__.py", "line": 7, "token": "handler", "why": "re-export" },
+        { "file": "miniproj/dispatch.py", "line": 5, "token": "handler", "why": "import" },
+        { "file": "app.py", "line": 5, "token": "handler", "why": "import" },
+        { "file": "test_miniproj.py", "line": 3, "token": "handler", "why": "import" }
+      ],
+      "trap_sites": [
+        { "file": "miniproj/handlers/impl.py", "line": 1, "token": "handler", "why": "module docstring" },
+        { "file": "miniproj/handlers/impl.py", "line": 7, "token": "handler", "why": "function docstring pseudo-reference" },
+        { "file": "miniproj/handlers/impl.py", "line": 19, "token": "handler", "why": "comment" },
+        { "file": "miniproj/__init__.py", "line": 4, "token": "handler", "why": "module docstring" }
+      ]
+    },
+    {
+      "name": "flush",
+      "kind": "method (Cache.flush)",
+      "definition": { "file": "miniproj/cache.py", "line": 21 },
+      "true_sites": [
+        { "file": "miniproj/cache.py", "line": 15, "token": "flush", "why": "self.flush() inside Cache.put" },
+        { "file": "app.py", "line": 21, "token": "flush", "why": "cache.flush() on a Cache instance" },
+        { "file": "stats.py", "line": 23, "token": "flush", "why": "self.store.flush(); store is a Cache created via 'Cache as Store' alias" },
+        { "file": "test_miniproj.py", "line": 37, "token": "flush", "why": "cache.flush() in test" }
+      ],
+      "neutral_sites": [
+        { "file": "miniproj/cache.py", "line": 21, "token": "flush", "why": "definition" }
+      ],
+      "trap_sites": [
+        { "file": "miniproj/cache.py", "line": 1, "token": "flush", "why": "module docstring" },
+        { "file": "miniproj/cache.py", "line": 22, "token": "flush", "why": "docstring mentioning Logger.flush" },
+        { "file": "miniproj/loggers.py", "line": 1, "token": "flush", "why": "module docstring" },
+        { "file": "miniproj/loggers.py", "line": 13, "token": "flush", "why": "self.flush() on Logger, an unrelated class" },
+        { "file": "miniproj/loggers.py", "line": 15, "token": "flush", "why": "definition of the unrelated Logger.flush" },
+        { "file": "app.py", "line": 22, "token": "flush", "why": "log.flush() on Logger" },
+        { "file": "stats.py", "line": 24, "token": "flush", "why": "word 'flush' inside a string literal" },
+        { "file": "stats.py", "line": 25, "token": "flush", "why": "self.logger.flush() on Logger" },
+        { "file": "test_miniproj.py", "line": 45, "token": "flush", "why": "log.flush() on Logger in test" }
+      ]
+    },
+    {
+      "name": "Cache",
+      "kind": "class",
+      "definition": { "file": "miniproj/cache.py", "line": 4 },
+      "true_sites": [
+        { "file": "app.py", "line": 11, "token": "Cache", "why": "constructor call" },
+        { "file": "stats.py", "line": 11, "token": "Store", "why": "constructor call through 'import Cache as Store' alias - the line never mentions 'Cache'" },
+        { "file": "test_miniproj.py", "line": 33, "token": "Cache", "why": "constructor call in test" }
+      ],
+      "neutral_sites": [
+        { "file": "miniproj/cache.py", "line": 4, "token": "Cache", "why": "class definition" },
+        { "file": "miniproj/__init__.py", "line": 8, "token": "Cache", "why": "re-export" },
+        { "file": "app.py", "line": 5, "token": "Cache", "why": "import" },
+        { "file": "stats.py", "line": 3, "token": "Cache", "why": "aliased import" },
+        { "file": "test_miniproj.py", "line": 4, "token": "Cache", "why": "import" }
+      ],
+      "trap_sites": [
+        { "file": "app.py", "line": 10, "token": "Cache", "why": "comment" },
+        { "file": "miniproj/loggers.py", "line": 1, "token": "Cache", "why": "module docstring" }
+      ]
+    },
+    {
+      "name": "normalize",
+      "kind": "function (decorated with @traced)",
+      "definition": { "file": "miniproj/textutil.py", "line": 7 },
+      "true_sites": [
+        { "file": "app.py", "line": 15, "token": "normalize", "why": "tu.normalize() through 'import miniproj.textutil as tu' module alias" },
+        { "file": "miniproj/textutil.py", "line": 13, "token": "normalize", "why": "direct call from shout(); target is wrapped by @traced" },
+        { "file": "test_miniproj.py", "line": 28, "token": "normalize", "why": "direct call in test" }
+      ],
+      "neutral_sites": [
+        { "file": "miniproj/textutil.py", "line": 7, "token": "normalize", "why": "definition" },
+        { "file": "test_miniproj.py", "line": 7, "token": "normalize", "why": "import" }
+      ],
+      "trap_sites": [
+        { "file": "miniproj/textutil.py", "line": 1, "token": "normalize", "why": "module docstring" },
+        { "file": "miniproj/textutil.py", "line": 12, "token": "normalize", "why": "comment" }
+      ]
+    },
+    {
+      "name": "handle_ping",
+      "kind": "function (only reachable via dynamic dispatch)",
+      "definition": { "file": "miniproj/dispatch.py", "line": 9 },
+      "true_sites": [
+        { "file": "miniproj/dispatch.py", "line": 19, "token": "handle_ping", "why": "registration as a dict value in the ROUTES table" },
+        { "file": "miniproj/dispatch.py", "line": 37, "token": "handle_ping", "why": "name passed to getattr() as a string literal" }
+      ],
+      "neutral_sites": [
+        { "file": "miniproj/dispatch.py", "line": 9, "token": "handle_ping", "why": "definition" }
+      ],
+      "trap_sites": []
+    },
+    {
+      "name": "route",
+      "kind": "function (control symbol, no traps)",
+      "definition": { "file": "miniproj/dispatch.py", "line": 24 },
+      "true_sites": [
+        { "file": "app.py", "line": 20, "token": "route", "why": "direct call" },
+        { "file": "test_miniproj.py", "line": 15, "token": "route", "why": "direct call in test" }
+      ],
+      "neutral_sites": [
+        { "file": "miniproj/dispatch.py", "line": 24, "token": "route", "why": "definition" },
+        { "file": "app.py", "line": 6, "token": "route", "why": "import" },
+        { "file": "test_miniproj.py", "line": 5, "token": "route", "why": "import" }
+      ],
+      "trap_sites": []
+    },
+    {
+      "name": "Logger",
+      "kind": "class",
+      "definition": { "file": "miniproj/loggers.py", "line": 4 },
+      "true_sites": [
+        { "file": "app.py", "line": 12, "token": "Logger", "why": "constructor call, imported via re-export" },
+        { "file": "stats.py", "line": 12, "token": "Logger", "why": "constructor call" },
+        { "file": "test_miniproj.py", "line": 42, "token": "Logger", "why": "constructor call in test" }
+      ],
+      "neutral_sites": [
+        { "file": "miniproj/loggers.py", "line": 4, "token": "Logger", "why": "class definition" },
+        { "file": "miniproj/__init__.py", "line": 9, "token": "Logger", "why": "re-export" },
+        { "file": "app.py", "line": 5, "token": "Logger", "why": "import" },
+        { "file": "stats.py", "line": 4, "token": "Logger", "why": "import" },
+        { "file": "test_miniproj.py", "line": 6, "token": "Logger", "why": "import" }
+      ],
+      "trap_sites": [
+        { "file": "miniproj/cache.py", "line": 1, "token": "Logger", "why": "module docstring" },
+        { "file": "miniproj/cache.py", "line": 22, "token": "Logger", "why": "docstring" }
+      ]
+    }
+  ]
+}

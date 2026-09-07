@@ -1,0 +1,5 @@
+retrieval/code-search/bin/
+.venv/
+__pycache__/
+_work/
+_probe/

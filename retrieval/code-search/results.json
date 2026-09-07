@@ -1,0 +1,444 @@
+{
+  "versions": {
+    "ripgrep": "ripgrep 14.1.1 (rev 4649aa9700)",
+    "ctags": "Universal Ctags 6.2.0(b0615e0), Copyright (C) 2015-2025 Universal Ctags Team",
+    "python": "3.12.8",
+    "jedi": "0.20.0",
+    "tree-sitter": "0.24.0",
+    "tree-sitter-python": "0.23.6"
+  },
+  "corpus": {
+    "files": 11,
+    "lines": 266
+  },
+  "cold_start": {
+    "ripgrep": {
+      "note": "no index; grep is always cold",
+      "seconds": 0.0
+    },
+    "ctags": {
+      "note": "ctags -R index build",
+      "seconds": 0.0125
+    },
+    "tree-sitter": {
+      "note": "parse all corpus files to ASTs",
+      "seconds": 0.0012
+    },
+    "jedi": {
+      "note": "first get_references call (in-process caches empty)",
+      "seconds": 0.1979
+    }
+  },
+  "results": {
+    "ripgrep": {
+      "per_symbol": {
+        "handler": {
+          "recall": 1.0,
+          "precision": 0.5,
+          "true_total": 4,
+          "hits": 4,
+          "missed": [],
+          "false_positives": [
+            "miniproj/__init__.py:4",
+            "miniproj/handlers/impl.py:1",
+            "miniproj/handlers/impl.py:19",
+            "miniproj/handlers/impl.py:7"
+          ],
+          "traps_reported": 4,
+          "unclassified_reported": 0,
+          "query_ms": 7.49
+        },
+        "flush": {
+          "recall": 1.0,
+          "precision": 0.308,
+          "true_total": 4,
+          "hits": 4,
+          "missed": [],
+          "false_positives": [
+            "app.py:22",
+            "miniproj/cache.py:1",
+            "miniproj/cache.py:22",
+            "miniproj/loggers.py:1",
+            "miniproj/loggers.py:13",
+            "miniproj/loggers.py:15",
+            "stats.py:24",
+            "stats.py:25",
+            "test_miniproj.py:45"
+          ],
+          "traps_reported": 9,
+          "unclassified_reported": 0,
+          "query_ms": 6.53
+        },
+        "Cache": {
+          "recall": 0.667,
+          "precision": 0.5,
+          "true_total": 3,
+          "hits": 2,
+          "missed": [
+            "stats.py:11"
+          ],
+          "false_positives": [
+            "app.py:10",
+            "miniproj/loggers.py:1"
+          ],
+          "traps_reported": 2,
+          "unclassified_reported": 0,
+          "query_ms": 8.19
+        },
+        "normalize": {
+          "recall": 1.0,
+          "precision": 0.6,
+          "true_total": 3,
+          "hits": 3,
+          "missed": [],
+          "false_positives": [
+            "miniproj/textutil.py:1",
+            "miniproj/textutil.py:12"
+          ],
+          "traps_reported": 2,
+          "unclassified_reported": 0,
+          "query_ms": 7.62
+        },
+        "handle_ping": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 2,
+          "hits": 2,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 9.96
+        },
+        "route": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 2,
+          "hits": 2,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 6.88
+        },
+        "Logger": {
+          "recall": 1.0,
+          "precision": 0.6,
+          "true_total": 3,
+          "hits": 3,
+          "missed": [],
+          "false_positives": [
+            "miniproj/cache.py:1",
+            "miniproj/cache.py:22"
+          ],
+          "traps_reported": 2,
+          "unclassified_reported": 0,
+          "query_ms": 7.37
+        }
+      },
+      "micro_avg": {
+        "recall": 0.952,
+        "precision": 0.513
+      }
+    },
+    "ctags": {
+      "per_symbol": {
+        "handler": {
+          "recall": 0.0,
+          "precision": null,
+          "true_total": 4,
+          "hits": 0,
+          "missed": [
+            "app.py:18",
+            "miniproj/dispatch.py:15",
+            "miniproj/dispatch.py:28",
+            "test_miniproj.py:11"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 0.8
+        },
+        "flush": {
+          "recall": 0.0,
+          "precision": 0.0,
+          "true_total": 4,
+          "hits": 0,
+          "missed": [
+            "app.py:21",
+            "miniproj/cache.py:15",
+            "stats.py:23",
+            "test_miniproj.py:37"
+          ],
+          "false_positives": [
+            "miniproj/loggers.py:15"
+          ],
+          "traps_reported": 1,
+          "unclassified_reported": 0,
+          "query_ms": 0.66
+        },
+        "Cache": {
+          "recall": 0.0,
+          "precision": null,
+          "true_total": 3,
+          "hits": 0,
+          "missed": [
+            "app.py:11",
+            "stats.py:11",
+            "test_miniproj.py:33"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 0.58
+        },
+        "normalize": {
+          "recall": 0.0,
+          "precision": null,
+          "true_total": 3,
+          "hits": 0,
+          "missed": [
+            "app.py:15",
+            "miniproj/textutil.py:13",
+            "test_miniproj.py:28"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 0.55
+        },
+        "handle_ping": {
+          "recall": 0.0,
+          "precision": null,
+          "true_total": 2,
+          "hits": 0,
+          "missed": [
+            "miniproj/dispatch.py:19",
+            "miniproj/dispatch.py:37"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 0.62
+        },
+        "route": {
+          "recall": 0.0,
+          "precision": null,
+          "true_total": 2,
+          "hits": 0,
+          "missed": [
+            "app.py:20",
+            "test_miniproj.py:15"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 1.32
+        },
+        "Logger": {
+          "recall": 0.0,
+          "precision": null,
+          "true_total": 3,
+          "hits": 0,
+          "missed": [
+            "app.py:12",
+            "stats.py:12",
+            "test_miniproj.py:42"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 0.61
+        }
+      },
+      "micro_avg": {
+        "recall": 0.0,
+        "precision": 0.0
+      }
+    },
+    "tree-sitter": {
+      "per_symbol": {
+        "handler": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 4,
+          "hits": 4,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 1.54
+        },
+        "flush": {
+          "recall": 1.0,
+          "precision": 0.5,
+          "true_total": 4,
+          "hits": 4,
+          "missed": [],
+          "false_positives": [
+            "app.py:22",
+            "miniproj/loggers.py:13",
+            "stats.py:25",
+            "test_miniproj.py:45"
+          ],
+          "traps_reported": 4,
+          "unclassified_reported": 0,
+          "query_ms": 1.55
+        },
+        "Cache": {
+          "recall": 0.667,
+          "precision": 1.0,
+          "true_total": 3,
+          "hits": 2,
+          "missed": [
+            "stats.py:11"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 1.5
+        },
+        "normalize": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 3,
+          "hits": 3,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 1.45
+        },
+        "handle_ping": {
+          "recall": 0.0,
+          "precision": null,
+          "true_total": 2,
+          "hits": 0,
+          "missed": [
+            "miniproj/dispatch.py:19",
+            "miniproj/dispatch.py:37"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 0.7
+        },
+        "route": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 2,
+          "hits": 2,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 0.71
+        },
+        "Logger": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 3,
+          "hits": 3,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 0.68
+        }
+      },
+      "micro_avg": {
+        "recall": 0.857,
+        "precision": 0.818
+      }
+    },
+    "jedi": {
+      "per_symbol": {
+        "handler": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 4,
+          "hits": 4,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 5.24
+        },
+        "flush": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 4,
+          "hits": 4,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 9.4
+        },
+        "Cache": {
+          "recall": 0.667,
+          "precision": 1.0,
+          "true_total": 3,
+          "hits": 2,
+          "missed": [
+            "stats.py:11"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 2.96
+        },
+        "normalize": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 3,
+          "hits": 3,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 2.9
+        },
+        "handle_ping": {
+          "recall": 0.5,
+          "precision": 1.0,
+          "true_total": 2,
+          "hits": 1,
+          "missed": [
+            "miniproj/dispatch.py:37"
+          ],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 2.23
+        },
+        "route": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 2,
+          "hits": 2,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 3.14
+        },
+        "Logger": {
+          "recall": 1.0,
+          "precision": 1.0,
+          "true_total": 3,
+          "hits": 3,
+          "missed": [],
+          "false_positives": [],
+          "traps_reported": 0,
+          "unclassified_reported": 0,
+          "query_ms": 5.3
+        }
+      },
+      "micro_avg": {
+        "recall": 0.905,
+        "precision": 1.0
+      }
+    }
+  }
+}

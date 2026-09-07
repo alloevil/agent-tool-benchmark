@@ -1,0 +1,6 @@
+[
+  {
+    "old_str": "def main():\n    import sys\n\n    op, a, b = sys.argv[1], float(sys.argv[2]), float(sys.argv[3])\n    print(apply_op(op, a, b))",
+    "new_str": "def main():\n    import sys\n\n    if len(sys.argv) == 4:\n        op, a, b = sys.argv[1], float(sys.argv[2]), float(sys.argv[3])\n        print(apply_op(op, a, b))"
+  }
+]

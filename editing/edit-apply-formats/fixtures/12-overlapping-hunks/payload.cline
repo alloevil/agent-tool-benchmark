@@ -1,0 +1,18 @@
+------- SEARCH
+def multiply(a, b):
+    return a * b
+=======
+def multiply(a, b):
+    product = a * b
+    return product
++++++++ REPLACE
+------- SEARCH
+def divide(a, b):
+    # TODO: handle divide by zero
+    return a / b
+=======
+def divide(a, b):
+    if b == 0:
+        raise ZeroDivisionError("division by zero is not allowed")
+    return a / b
++++++++ REPLACE

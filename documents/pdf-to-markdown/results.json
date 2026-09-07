@@ -1,0 +1,228 @@
+{
+  "tools": {
+    "pdftotext": {
+      "status": "ok",
+      "fixtures": {
+        "01-simple": {
+          "cold_s": 0.052,
+          "warm_s": 0.061,
+          "output_bytes": 795,
+          "output_tokens": 164,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0
+        },
+        "02-table": {
+          "cold_s": 0.063,
+          "warm_s": 0.048,
+          "output_bytes": 441,
+          "output_tokens": 144,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0,
+          "cell_recall": 1.0
+        },
+        "03-two-column": {
+          "cold_s": 0.037,
+          "warm_s": 0.035,
+          "output_bytes": 2066,
+          "output_tokens": 456,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0,
+          "order_pairs_ok": "16/22",
+          "reading_order_correct": false
+        },
+        "04-code-and-list": {
+          "cold_s": 0.043,
+          "warm_s": 0.058,
+          "output_bytes": 563,
+          "output_tokens": 139,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0,
+          "code_recall": 1.0
+        },
+        "05-cjk": {
+          "cold_s": 0.072,
+          "warm_s": 0.07,
+          "output_bytes": 458,
+          "output_tokens": 190,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0,
+          "cjk_intact": 1.0
+        }
+      }
+    },
+    "pymupdf4llm": {
+      "status": "ok",
+      "fixtures": {
+        "01-simple": {
+          "cold_s": 1.024,
+          "warm_s": 1.008,
+          "output_bytes": 842,
+          "output_tokens": 179,
+          "deterministic": true,
+          "heading_recall": 1.0,
+          "sentence_recall": 1.0
+        },
+        "02-table": {
+          "cold_s": 1.116,
+          "warm_s": 1.254,
+          "output_bytes": 475,
+          "output_tokens": 170,
+          "deterministic": true,
+          "heading_recall": 1.0,
+          "sentence_recall": 1.0,
+          "cell_recall": 1.0
+        },
+        "03-two-column": {
+          "cold_s": 1.063,
+          "warm_s": 1.156,
+          "output_bytes": 2081,
+          "output_tokens": 414,
+          "deterministic": true,
+          "heading_recall": 1.0,
+          "sentence_recall": 1.0,
+          "order_pairs_ok": "22/22",
+          "reading_order_correct": true
+        },
+        "04-code-and-list": {
+          "cold_s": 1.088,
+          "warm_s": 0.983,
+          "output_bytes": 659,
+          "output_tokens": 161,
+          "deterministic": true,
+          "heading_recall": 1.0,
+          "sentence_recall": 1.0,
+          "code_recall": 1.0
+        },
+        "05-cjk": {
+          "cold_s": 0.977,
+          "warm_s": 0.964,
+          "output_bytes": 467,
+          "output_tokens": 193,
+          "deterministic": true,
+          "heading_recall": 0.5,
+          "sentence_recall": 1.0,
+          "cjk_intact": 1.0
+        }
+      }
+    },
+    "markitdown": {
+      "status": "ok",
+      "fixtures": {
+        "01-simple": {
+          "cold_s": 1.0,
+          "warm_s": 1.069,
+          "output_bytes": 838,
+          "output_tokens": 202,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0
+        },
+        "02-table": {
+          "cold_s": 0.982,
+          "warm_s": 0.964,
+          "output_bytes": 582,
+          "output_tokens": 169,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0,
+          "cell_recall": 1.0
+        },
+        "03-two-column": {
+          "cold_s": 1.103,
+          "warm_s": 1.08,
+          "output_bytes": 2209,
+          "output_tokens": 594,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 0.75,
+          "order_pairs_ok": "12/22",
+          "reading_order_correct": false
+        },
+        "04-code-and-list": {
+          "cold_s": 0.982,
+          "warm_s": 0.996,
+          "output_bytes": 647,
+          "output_tokens": 157,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0,
+          "code_recall": 1.0
+        },
+        "05-cjk": {
+          "cold_s": 1.037,
+          "warm_s": 1.029,
+          "output_bytes": 462,
+          "output_tokens": 189,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0,
+          "cjk_intact": 1.0
+        }
+      }
+    },
+    "docling": {
+      "status": "ok",
+      "fixtures": {
+        "01-simple": {
+          "cold_s": 39.381,
+          "warm_s": 11.691,
+          "output_bytes": 834,
+          "output_tokens": 186,
+          "deterministic": true,
+          "heading_recall": 1.0,
+          "sentence_recall": 1.0
+        },
+        "02-table": {
+          "cold_s": 13.356,
+          "warm_s": 13.215,
+          "output_bytes": 614,
+          "output_tokens": 182,
+          "deterministic": true,
+          "heading_recall": 1.0,
+          "sentence_recall": 1.0,
+          "cell_recall": 1.0
+        },
+        "03-two-column": {
+          "cold_s": 11.584,
+          "warm_s": 11.771,
+          "output_bytes": 2122,
+          "output_tokens": 458,
+          "deterministic": true,
+          "heading_recall": 1.0,
+          "sentence_recall": 1.0,
+          "order_pairs_ok": "22/22",
+          "reading_order_correct": true
+        },
+        "04-code-and-list": {
+          "cold_s": 11.638,
+          "warm_s": 12.211,
+          "output_bytes": 572,
+          "output_tokens": 143,
+          "deterministic": true,
+          "heading_recall": 1.0,
+          "sentence_recall": 1.0,
+          "code_recall": 1.0
+        },
+        "05-cjk": {
+          "cold_s": 12.452,
+          "warm_s": 12.716,
+          "output_bytes": 467,
+          "output_tokens": 230,
+          "deterministic": true,
+          "heading_recall": 0.0,
+          "sentence_recall": 1.0,
+          "cjk_intact": 0.0
+        }
+      }
+    },
+    "marker": {
+      "status": "not_run",
+      "reason": "model weights unfetchable from this network: models.datalab.to resets connections, huggingface.co and hf-mirror.com stall at ~10 kB/s for datalab-to repos; 4 attempts over 2 sessions aborted"
+    }
+  }
+}

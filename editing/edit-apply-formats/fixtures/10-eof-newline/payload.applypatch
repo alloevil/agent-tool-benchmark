@@ -1,0 +1,9 @@
+*** Begin Patch
+*** Update File: file.py
+@@
+ 
+ 
+ if __name__ == "__main__":
+-    main()
++    raise SystemExit(main())
+*** End Patch

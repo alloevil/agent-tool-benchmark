@@ -1,0 +1,13 @@
+*** Begin Patch
+*** Update File: file.py
+@@
+ 
+ 
+ def divide(a, b):
+-    # TODO: handle divide by zero
++    if b == 0:
++        raise ZeroDivisionError("division by zero is not allowed")
+     return a / b
+ 
+ 
+*** End Patch

@@ -1,0 +1,8 @@
+*** Begin Patch
+*** Add File: util.py
++"""Helpers for the calculator."""
++
++
++def clamp(x, lo, hi):
++    return max(lo, min(hi, x))
+*** End Patch

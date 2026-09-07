@@ -1,0 +1,6 @@
+[
+  {
+    "old_str": "def format_result(value):\n    # TODO: \u5904\u7406\u65e0\u7a77\u5927 \u221e\n    return f\"\u7ed3\u679c \u2192 {value} \u2705\"",
+    "new_str": "def format_result(value):\n    if value == float(\"inf\"):\n        return \"\u7ed3\u679c \u2192 \u221e \u267e\ufe0f\"\n    return f\"\u7ed3\u679c \u2192 {value} \u2705\""
+  }
+]

@@ -1,0 +1,34 @@
+*** Begin Patch
+*** Update File: file.py
+@@
+ """Small calculator used by the edit-format benchmark."""
+ 
+-VERSION = "1.0.0"
++VERSION = "1.1.0"
+ 
+ 
+ def add(a, b):
+@@
+     return a * b
+ 
+ 
++def power(a, b):
++    return a ** b
++
++
+ def divide(a, b):
+-    # TODO: handle divide by zero
++    if b == 0:
++        raise ZeroDivisionError("division by zero is not allowed")
+     return a / b
+ 
+ 
+@@
+         "sub": subtract,
+         "mul": multiply,
+         "div": divide,
++        "pow": power,
+     }
+     if op not in ops:
+         raise KeyError(f"unknown op: {op}")
+*** End Patch

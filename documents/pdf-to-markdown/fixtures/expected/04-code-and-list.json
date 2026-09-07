@@ -1,0 +1,29 @@
+{
+  "name": "04-code-and-list",
+  "headings": [
+    "Pipeline Reference",
+    "Smoothing Utility"
+  ],
+  "key_sentences": [
+    "The pipeline runs three top-level stages, each with its own checklist of sub-tasks that must pass before promotion.",
+    "Data ingestion",
+    "Feature preparation",
+    "Model training",
+    "schema validation",
+    "null-rate audit",
+    "window normalisation"
+  ],
+  "code_lines": [
+    "def moving_average(xs, k):",
+    "    if k <= 0:",
+    "        raise ValueError(\"window must be positive\")",
+    "    acc = 0.0",
+    "    out = []",
+    "    for i, x in enumerate(xs):",
+    "        acc += x",
+    "        if i >= k:",
+    "            acc -= xs[i - k]",
+    "        out.append(acc / min(i + 1, k))",
+    "    return out"
+  ]
+}

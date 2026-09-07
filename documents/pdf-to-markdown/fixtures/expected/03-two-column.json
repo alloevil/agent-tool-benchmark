@@ -1,0 +1,106 @@
+{
+  "name": "03-two-column",
+  "headings": [
+    "Glacier Retreat in the Alps"
+  ],
+  "key_sentences": [
+    "Alpine glaciers store roughly seventy percent of the region's freshwater reserve.",
+    "Between 2000 and 2020 the average glacier front retreated by nearly one kilometre.",
+    "Meltwater timing shifts are already measurable in the Rhone and Po basins.",
+    "Downstream hydropower operators have re-licensed reservoirs to buffer the change.",
+    "Model ensembles project that half of today's glacier volume disappears by 2060.",
+    "The remaining ice concentrates above four thousand metres of elevation.",
+    "Summer river discharge could drop by a quarter in dry years after mid-century.",
+    "Adaptation plans therefore prioritise storage, not just emission scenarios."
+  ],
+  "order_pairs": [
+    [
+      "Alpine glaciers store roughly seventy percent of the region's freshwater reserve.",
+      "Between 2000 and 2020 the average glacier front retreated by nearly one kilometre."
+    ],
+    [
+      "Between 2000 and 2020 the average glacier front retreated by nearly one kilometre.",
+      "Meltwater timing shifts are already measurable in the Rhone and Po basins."
+    ],
+    [
+      "Meltwater timing shifts are already measurable in the Rhone and Po basins.",
+      "Downstream hydropower operators have re-licensed reservoirs to buffer the change."
+    ],
+    [
+      "Model ensembles project that half of today's glacier volume disappears by 2060.",
+      "The remaining ice concentrates above four thousand metres of elevation."
+    ],
+    [
+      "The remaining ice concentrates above four thousand metres of elevation.",
+      "Summer river discharge could drop by a quarter in dry years after mid-century."
+    ],
+    [
+      "Summer river discharge could drop by a quarter in dry years after mid-century.",
+      "Adaptation plans therefore prioritise storage, not just emission scenarios."
+    ],
+    [
+      "Alpine glaciers store roughly seventy percent of the region's freshwater reserve.",
+      "Model ensembles project that half of today's glacier volume disappears by 2060."
+    ],
+    [
+      "Alpine glaciers store roughly seventy percent of the region's freshwater reserve.",
+      "The remaining ice concentrates above four thousand metres of elevation."
+    ],
+    [
+      "Alpine glaciers store roughly seventy percent of the region's freshwater reserve.",
+      "Summer river discharge could drop by a quarter in dry years after mid-century."
+    ],
+    [
+      "Alpine glaciers store roughly seventy percent of the region's freshwater reserve.",
+      "Adaptation plans therefore prioritise storage, not just emission scenarios."
+    ],
+    [
+      "Between 2000 and 2020 the average glacier front retreated by nearly one kilometre.",
+      "Model ensembles project that half of today's glacier volume disappears by 2060."
+    ],
+    [
+      "Between 2000 and 2020 the average glacier front retreated by nearly one kilometre.",
+      "The remaining ice concentrates above four thousand metres of elevation."
+    ],
+    [
+      "Between 2000 and 2020 the average glacier front retreated by nearly one kilometre.",
+      "Summer river discharge could drop by a quarter in dry years after mid-century."
+    ],
+    [
+      "Between 2000 and 2020 the average glacier front retreated by nearly one kilometre.",
+      "Adaptation plans therefore prioritise storage, not just emission scenarios."
+    ],
+    [
+      "Meltwater timing shifts are already measurable in the Rhone and Po basins.",
+      "Model ensembles project that half of today's glacier volume disappears by 2060."
+    ],
+    [
+      "Meltwater timing shifts are already measurable in the Rhone and Po basins.",
+      "The remaining ice concentrates above four thousand metres of elevation."
+    ],
+    [
+      "Meltwater timing shifts are already measurable in the Rhone and Po basins.",
+      "Summer river discharge could drop by a quarter in dry years after mid-century."
+    ],
+    [
+      "Meltwater timing shifts are already measurable in the Rhone and Po basins.",
+      "Adaptation plans therefore prioritise storage, not just emission scenarios."
+    ],
+    [
+      "Downstream hydropower operators have re-licensed reservoirs to buffer the change.",
+      "Model ensembles project that half of today's glacier volume disappears by 2060."
+    ],
+    [
+      "Downstream hydropower operators have re-licensed reservoirs to buffer the change.",
+      "The remaining ice concentrates above four thousand metres of elevation."
+    ],
+    [
+      "Downstream hydropower operators have re-licensed reservoirs to buffer the change.",
+      "Summer river discharge could drop by a quarter in dry years after mid-century."
+    ],
+    [
+      "Downstream hydropower operators have re-licensed reservoirs to buffer the change.",
+      "Adaptation plans therefore prioritise storage, not just emission scenarios."
+    ]
+  ]
+}

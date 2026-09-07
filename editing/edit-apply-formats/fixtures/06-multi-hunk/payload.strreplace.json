@@ -1,0 +1,18 @@
+[
+  {
+    "old_str": "VERSION = \"1.0.0\"",
+    "new_str": "VERSION = \"1.1.0\""
+  },
+  {
+    "old_str": "def multiply(a, b):\n    return a * b",
+    "new_str": "def multiply(a, b):\n    return a * b\n\n\ndef power(a, b):\n    return a ** b"
+  },
+  {
+    "old_str": "def divide(a, b):\n    # TODO: handle divide by zero\n    return a / b",
+    "new_str": "def divide(a, b):\n    if b == 0:\n        raise ZeroDivisionError(\"division by zero is not allowed\")\n    return a / b"
+  },
+  {
+    "old_str": "        \"div\": divide,",
+    "new_str": "        \"div\": divide,\n        \"pow\": power,"
+  }
+]

@@ -1,0 +1,7 @@
+[
+  {
+    "create": true,
+    "path": "util.py",
+    "file_text": "\"\"\"Helpers for the calculator.\"\"\"\n\n\ndef clamp(x, lo, hi):\n    return max(lo, min(hi, x))\n"
+  }
+]

@@ -1,0 +1,12 @@
+*** Begin Patch
+*** Update File: file.py
+@@
+ 
+ def subtract(a, b):
+     if not isinstance(a, (int, float)):
+-        raise TypeError("a must be a number")
++        raise TypeError("a must be numeric")
+     return a - b
+ 
+ 
+*** End Patch

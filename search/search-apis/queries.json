@@ -1,0 +1,42 @@
+[
+  {
+    "id": "canonical-docs",
+    "query": "python 3.13 what's new official documentation",
+    "expect_url_contains": ["docs.python.org/3.13/whatsnew", "docs.python.org/3/whatsnew/3.13"]
+  },
+  {
+    "id": "longtail-error-code",
+    "query": "rust error E0502 cannot borrow as mutable because also borrowed as immutable",
+    "expect_url_contains": ["doc.rust-lang.org", "users.rust-lang.org", "stackoverflow.com"]
+  },
+  {
+    "id": "niche-db-doc",
+    "query": "SQLite WAL checkpoint TRUNCATE mode behavior",
+    "expect_url_contains": ["sqlite.org"]
+  },
+  {
+    "id": "github-repo-lookup",
+    "query": "ripgrep github repository BurntSushi",
+    "expect_url_contains": ["github.com/BurntSushi/ripgrep"]
+  },
+  {
+    "id": "recent-release",
+    "query": "latest stable Node.js LTS version release notes",
+    "expect_url_contains": ["nodejs.org"]
+  },
+  {
+    "id": "spec-lookup",
+    "query": "HTTP 103 Early Hints RFC specification",
+    "expect_url_contains": ["rfc-editor.org", "datatracker.ietf.org", "developer.mozilla.org"]
+  },
+  {
+    "id": "cve-lookup",
+    "query": "CVE-2024-3094 xz backdoor details",
+    "expect_url_contains": ["nvd.nist.gov", "cve.org", "openwall.com", "redhat.com", "tukaani.org"]
+  },
+  {
+    "id": "chinese-query",
+    "query": "杭州亚运会 吉祥物 名字",
+    "expect_url_contains": ["wikipedia.org", "baike.baidu.com", "hangzhou2022", "olympics.com", "gov.cn"]
+  }
+]

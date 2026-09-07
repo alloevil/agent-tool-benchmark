@@ -1,0 +1,6 @@
+[
+  {
+    "old_str": "def divide(a, b):\n    # TODO: handle divide by zero\n    return a / b",
+    "new_str": "def divide(a, b):\n    if b == 0:\n        raise ZeroDivisionError(\"division by zero is not allowed\")\n    return a / b"
+  }
+]

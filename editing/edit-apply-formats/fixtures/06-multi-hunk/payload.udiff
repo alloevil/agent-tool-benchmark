@@ -1,0 +1,33 @@
+--- a/file.py
++++ b/file.py
+@@ -1,6 +1,6 @@
+ """Small calculator used by the edit-format benchmark."""
+ 
+-VERSION = "1.0.0"
++VERSION = "1.1.0"
+ 
+ 
+ def add(a, b):
+@@ -19,8 +19,13 @@
+     return a * b
+ 
+ 
++def power(a, b):
++    return a ** b
++
++
+ def divide(a, b):
+-    # TODO: handle divide by zero
++    if b == 0:
++        raise ZeroDivisionError("division by zero is not allowed")
+     return a / b
+ 
+ 
+@@ -30,6 +35,7 @@
+         "sub": subtract,
+         "mul": multiply,
+         "div": divide,
++        "pow": power,
+     }
+     if op not in ops:
+         raise KeyError(f"unknown op: {op}")

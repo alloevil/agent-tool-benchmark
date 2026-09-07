@@ -1,0 +1,14 @@
+--- a/file.py
++++ b/file.py
+@@ -39,8 +39,9 @@
+ def main():
+     import sys
+ 
+-    op, a, b = sys.argv[1], float(sys.argv[2]), float(sys.argv[3])
+-    print(apply_op(op, a, b))
++    if len(sys.argv) == 4:
++        op, a, b = sys.argv[1], float(sys.argv[2]), float(sys.argv[3])
++        print(apply_op(op, a, b))
+ 
+ 
+ if __name__ == "__main__":

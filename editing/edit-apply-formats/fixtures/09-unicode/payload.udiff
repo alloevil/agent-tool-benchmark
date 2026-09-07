@@ -1,0 +1,12 @@
+--- a/file.py
++++ b/file.py
+@@ -13,7 +13,8 @@
+ 
+ 
+ def format_result(value):
+-    # TODO: 处理无穷大 ∞
++    if value == float("inf"):
++        return "结果 → ∞ ♾️"
+     return f"结果 → {value} ✅"
+ 
+ 

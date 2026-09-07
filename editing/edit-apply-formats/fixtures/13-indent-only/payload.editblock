@@ -1,0 +1,17 @@
+file.py
+```python
+<<<<<<< SEARCH
+def main():
+    import sys
+
+    op, a, b = sys.argv[1], float(sys.argv[2]), float(sys.argv[3])
+    print(apply_op(op, a, b))
+=======
+def main():
+    import sys
+
+    if len(sys.argv) == 4:
+        op, a, b = sys.argv[1], float(sys.argv[2]), float(sys.argv[3])
+        print(apply_op(op, a, b))
+>>>>>>> REPLACE
+```

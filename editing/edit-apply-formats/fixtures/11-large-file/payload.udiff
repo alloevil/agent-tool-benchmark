@@ -1,0 +1,12 @@
+--- a/file.py
++++ b/file.py
+@@ -4781,7 +4781,8 @@
+ 
+ 
+ def divide(a, b):
+-    # TODO: handle divide by zero
++    if b == 0:
++        raise ZeroDivisionError("division by zero is not allowed")
+     return a / b
+ 
+ 

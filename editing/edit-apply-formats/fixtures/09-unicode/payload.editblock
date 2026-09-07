@@ -1,0 +1,13 @@
+file.py
+```python
+<<<<<<< SEARCH
+def format_result(value):
+    # TODO: 处理无穷大 ∞
+    return f"结果 → {value} ✅"
+=======
+def format_result(value):
+    if value == float("inf"):
+        return "结果 → ∞ ♾️"
+    return f"结果 → {value} ✅"
+>>>>>>> REPLACE
+```

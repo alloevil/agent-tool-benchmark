@@ -1,0 +1,11 @@
+--- a/file.py
++++ b/file.py
+@@ -11,7 +11,7 @@
+ 
+ def subtract(a, b):
+     if not isinstance(a, (int, float)):
+-        raise TypeError("a must be a number")
++        raise TypeError("a must be numeric")
+     return a - b
+ 
+ 

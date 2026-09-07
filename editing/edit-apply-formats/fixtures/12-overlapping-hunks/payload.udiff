@@ -1,0 +1,28 @@
+--- a/file.py
++++ b/file.py
+@@ -15,8 +15,9 @@
+     return a - b
+ 
+ 
+-def multiply(a, b):
+-    return a * b
++def multiply(a, b):
++    product = a * b
++    return product
+ 
+ 
+ def divide(a, b):
+@@ -19,9 +20,10 @@
+     return a * b
+ 
+ 
+-def divide(a, b):
+-    # TODO: handle divide by zero
+-    return a / b
++def divide(a, b):
++    if b == 0:
++        raise ZeroDivisionError("division by zero is not allowed")
++    return a / b
+ 
+ 
+ def apply_op(op, a, b):

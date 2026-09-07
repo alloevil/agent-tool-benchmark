@@ -1,0 +1,106 @@
+{
+  "01-clean": {
+    "udiff": 66,
+    "editblock": 68,
+    "strreplace": 76,
+    "applypatch": 63,
+    "cline": 61,
+    "wholefile": 248
+  },
+  "02-line-shift": {
+    "udiff": 66,
+    "editblock": 68,
+    "strreplace": 76,
+    "applypatch": 63,
+    "cline": 61,
+    "wholefile": 248
+  },
+  "03-whitespace": {
+    "udiff": 66,
+    "editblock": 68,
+    "strreplace": 76,
+    "applypatch": 63,
+    "cline": 61,
+    "wholefile": 248
+  },
+  "04-ambiguous": {
+    "udiff": 66,
+    "editblock": 56,
+    "strreplace": 65,
+    "applypatch": 63,
+    "cline": 49,
+    "wholefile": 236
+  },
+  "05-context-drift": {
+    "udiff": 66,
+    "editblock": 68,
+    "strreplace": 76,
+    "applypatch": 63,
+    "cline": 61,
+    "wholefile": 248
+  },
+  "06-multi-hunk": {
+    "udiff": 191,
+    "editblock": 185,
+    "strreplace": 204,
+    "applypatch": 172,
+    "cline": 157,
+    "wholefile": 266
+  },
+  "07-new-file": {
+    "udiff": 50,
+    "editblock": 41,
+    "strreplace": 61,
+    "applypatch": 45,
+    "cline": 34,
+    "wholefile": 26
+  },
+  "08-crlf": {
+    "udiff": 66,
+    "editblock": 68,
+    "strreplace": 76,
+    "applypatch": 63,
+    "cline": 61,
+    "wholefile": 248
+  },
+  "09-unicode": {
+    "udiff": 75,
+    "editblock": 82,
+    "strreplace": 143,
+    "applypatch": 72,
+    "cline": 75,
+    "wholefile": 149
+  },
+  "10-eof-newline": {
+    "udiff": 56,
+    "editblock": 40,
+    "strreplace": 53,
+    "applypatch": 37,
+    "cline": 33,
+    "wholefile": 240
+  },
+  "11-large-file": {
+    "udiff": 68,
+    "editblock": 68,
+    "strreplace": 76,
+    "applypatch": 63,
+    "cline": 61,
+    "wholefile": 25099
+  },
+  "12-overlapping-hunks": {
+    "udiff": 153,
+    "editblock": 112,
+    "strreplace": 123,
+    "applypatch": 142,
+    "cline": 98,
+    "wholefile": 253
+  },
+  "13-indent-only": {
+    "udiff": 121,
+    "editblock": 109,
+    "strreplace": 124,
+    "applypatch": 118,
+    "cline": 102,
+    "wholefile": 247
+  }
+}

@@ -1,0 +1,10 @@
+file.py
+```python
+<<<<<<< SEARCH
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+=======
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be numeric")
+>>>>>>> REPLACE
+```

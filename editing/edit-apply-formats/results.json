@@ -1,0 +1,548 @@
+{
+  "01-clean": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0014,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0008,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.5316,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0004,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.5831,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0027,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.0214,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "02-line-shift": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0015,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.001,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0107,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.025,
+      "error": null
+    },
+    "wholefile": {
+      "status": "CORRUPT",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "03-whitespace": {
+    "git-apply": {
+      "status": "REJECT",
+      "seconds": 0.0019,
+      "error": "error: file.py: patch does not apply"
+    },
+    "gnu-patch": {
+      "status": "REJECT",
+      "seconds": 0.0016,
+      "error": "1 out of 1 hunk FAILED -- saving rejects to file file.py.rej"
+    },
+    "aider-udiff": {
+      "status": "REJECT",
+      "seconds": 0.003,
+      "error": "hunk failed to apply cleanly to file.py"
+    },
+    "editblock": {
+      "status": "REJECT",
+      "seconds": 0.0005,
+      "error": "SEARCH block not found in file.py"
+    },
+    "strreplace": {
+      "status": "REJECT",
+      "seconds": 0.0043,
+      "error": "No replacement was performed, old_str `def divide(a, b):\n    # TODO: handle divide by zero\n    return a / b` did not appear verbatim in /home/gaoruilin/agent-tool-benchmark/editing/edit-apply-formats/"
+    },
+    "codex-applypatch": {
+      "status": "CORRUPT",
+      "seconds": 0.0004,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "CORRUPT",
+      "seconds": 0.0267,
+      "error": null
+    },
+    "wholefile": {
+      "status": "CORRUPT",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "04-ambiguous": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0013,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0011,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "editblock": {
+      "status": "CORRUPT",
+      "seconds": 0.0004,
+      "error": null
+    },
+    "strreplace": {
+      "status": "REJECT",
+      "seconds": 0.0025,
+      "error": "No replacement was performed. Multiple occurrences of old_str `    if not isinstance(a, (int, float)):\n        raise TypeError(\"a must be a number\")` in lines [7, 13]. Please ensure it is unique."
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0004,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "CORRUPT",
+      "seconds": 0.0243,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "05-context-drift": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0018,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0011,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0004,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0085,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0002,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.014,
+      "error": null
+    },
+    "wholefile": {
+      "status": "CORRUPT",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "06-multi-hunk": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0011,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0007,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.0004,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0006,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0105,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0002,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.0124,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "07-new-file": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0009,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0007,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0002,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0005,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "CORRUPT",
+      "seconds": 0.0001,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.0121,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "08-crlf": {
+    "git-apply": {
+      "status": "REJECT",
+      "seconds": 0.001,
+      "error": "error: file.py: patch does not apply"
+    },
+    "gnu-patch": {
+      "status": "REJECT",
+      "seconds": 0.0007,
+      "error": "1 out of 1 hunk FAILED -- saving rejects to file file.py.rej"
+    },
+    "aider-udiff": {
+      "status": "CORRUPT",
+      "seconds": 0.0001,
+      "error": null
+    },
+    "editblock": {
+      "status": "CORRUPT",
+      "seconds": 0.0002,
+      "error": null
+    },
+    "strreplace": {
+      "status": "CORRUPT",
+      "seconds": 0.0028,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "CORRUPT",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "CORRUPT",
+      "seconds": 0.021,
+      "error": null
+    },
+    "wholefile": {
+      "status": "CORRUPT",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "09-unicode": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0015,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.001,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0139,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.0236,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "10-eof-newline": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0018,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0011,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "CORRUPT",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "editblock": {
+      "status": "CORRUPT",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0045,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0002,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "CORRUPT",
+      "seconds": 0.0222,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "11-large-file": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0022,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0013,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.0004,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0022,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0168,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0022,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.0217,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "12-overlapping-hunks": {
+    "git-apply": {
+      "status": "REJECT",
+      "seconds": 0.0013,
+      "error": "error: file.py: patch does not apply"
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0018,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.001,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0004,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0096,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "REJECT",
+      "seconds": 0.0002,
+      "error": "Invalid context at 22:\n    return a * b\n\n\ndef divide(a, b):\n    # TODO: handle divide by zero\n    return a / b\n\n\ndef apply_op(op, a, b):"
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.0176,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  },
+  "13-indent-only": {
+    "git-apply": {
+      "status": "PASS",
+      "seconds": 0.0016,
+      "error": null
+    },
+    "gnu-patch": {
+      "status": "PASS",
+      "seconds": 0.0008,
+      "error": null
+    },
+    "aider-udiff": {
+      "status": "PASS",
+      "seconds": 0.0002,
+      "error": null
+    },
+    "editblock": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "strreplace": {
+      "status": "PASS",
+      "seconds": 0.0058,
+      "error": null
+    },
+    "codex-applypatch": {
+      "status": "PASS",
+      "seconds": 0.0003,
+      "error": null
+    },
+    "cline-replace": {
+      "status": "PASS",
+      "seconds": 0.0189,
+      "error": null
+    },
+    "wholefile": {
+      "status": "PASS",
+      "seconds": 0.0001,
+      "error": null
+    }
+  }
+}

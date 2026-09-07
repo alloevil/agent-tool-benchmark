@@ -1,0 +1,10 @@
+--- a/file.py
++++ b/file.py
+@@ -44,4 +44,4 @@
+ 
+ 
+ if __name__ == "__main__":
+-    main()
+\ No newline at end of file
++    raise SystemExit(main())
+\ No newline at end of file
