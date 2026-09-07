@@ -30,7 +30,9 @@ Every benchmark here is a real run on real tools — same machine, same task sui
 ## Planned
 
 - Agent terminal and sandbox execution environments
-- Document and spreadsheet agent tools
+- Spreadsheet agent tools
+- Search-API captured run (harness ready, awaiting keys)
+
 
 ## License
 
