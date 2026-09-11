@@ -34,6 +34,10 @@ Every benchmark here is a real run on real tools — same machine, same task sui
 - Search-API captured run (harness ready, awaiting keys)
 
 
+<p align="center">
+  <a href="https://github.com/oil-oil/beautify-github-readme"><img src="./assets/readme/made-with-beautify.svg" width="300" alt="README made with beautify-github-readme"></a>
+</p>
+
 ## License
 
 MIT
