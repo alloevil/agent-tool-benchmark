@@ -5,15 +5,17 @@ agent document-ingestion pipelines, run on 2026-08-19.
 
 **TL;DR** — On these synthetic born-digital PDFs, **pymupdf4llm** wins on
 every axis that matters: full heading/table/code recall, the only correct
-two-column reading order among the fast tools, intact CJK, and ~0.65 s per
-call at ~120 MB of dependencies. **docling** matches its structure scores but
-takes **~10 s per document on CPU** and 5.5 GB of installed dependencies — and
-its CJK output is subtly corrupted (CJK Radicals substituted for ideographs:
-`水` U+6C34 → `⽔` U+2F54, invisible to the eye, fatal to search/embedding).
-**markitdown** and the **pdftotext** baseline produce *plain text with pipe
-tables*, not markdown structure (zero headings marked), and both interleave
-two-column text. **marker** could not be run (model CDN unreachable from this
-network — see Limitations).
+two-column reading order among the fast tools, intact CJK, and 1.07 s per
+call (warm mean over the 5 fixtures, `results.json`) at ~120 MB of
+dependencies. **docling** matches its structure scores but takes **12.3 s per
+document on CPU** warm (39.4 s on its first cold call) and 5.5 GB of
+installed dependencies — and its CJK output is subtly corrupted (CJK Radicals
+substituted for ideographs: `水` U+6C34 → `⽔` U+2F54, invisible to the eye,
+fatal to search/embedding).
+**markitdown** produces *plain text with pipe tables* and the **pdftotext**
+baseline bare plain text (no pipes, no headings); neither marks any
+structure, and both interleave two-column text. **marker** could not be run
+(model CDN unreachable from this network — see Limitations).
 
 ## What this measures
 
@@ -88,16 +90,16 @@ byte counts, and per-metric detail; raw converter outputs are in `outputs/`.
 | Measure (mean over 5 fixtures) | pdftotext | pymupdf4llm | markitdown | docling | marker |
 | --- | --- | --- | --- | --- | --- |
 | warm wall time / doc | **0.05 s** | 1.07 s | 1.03 s | 12.3 s³ | not run |
-| cold wall time / doc | 0.06 s | 1.05 s | 1.05 s | 11.7–13.2 s³ | not run |
+| cold wall time / doc | 0.05 s | 1.05 s | 1.02 s | 11.6–39.4 s³ | not run |
 | output tokens (5 docs, cl100k) | 1093 | 1117 | 1311 | 1199 | not run |
 | installed footprint | (system) | ~120 MB | ~10 MB | **5.5 GB + 642 MB models** | 5.3 GB + ~1 GB models |
 
-³ docling per-doc times ranged 11.7–13.2 s across this run (each conversion
-is a fresh subprocess paying import + model-load; models already cached on
-disk). Absolute times vary with machine load run-to-run — an earlier run of
-the identical matrix measured 7.6–8.5 s/doc — but the ~10× gap to
-pymupdf4llm and the ~200× gap to pdftotext are stable. Read every docling
-cell as "~10 s per document on this CPU".
+³ Every conversion is a fresh subprocess paying import + model-load (models
+already cached on disk). The 39.4 s cell is docling's first cold call while
+its model loaded; its remaining cold calls settle at 11.6–13.4 s. Absolute
+times vary with machine load run-to-run and this is a single run per cell (no
+averaging), but the ~12× gap to pymupdf4llm and the ~230× gap to pdftotext
+are stable. Read every docling cell as "~12 s per document warm on this CPU".
 
 ## Key findings
 
@@ -108,10 +110,12 @@ cell as "~10 s per document on this CPU".
    — which is 20× faster than markitdown and free.
 2. **Two-column reading order cleanly splits the field.** pymupdf4llm and
    docling read column-by-column (22/22 pairs). **pdftotext interleaves the
-   columns paragraph-wise** — its output is A1 B1 A2 B2 …, which keeps
-   within-column order (and accidentally passes 10 of the 16 cross-column
-   pairs, hence the flattering-looking 16/22) but breaks the actual reading
-   flow after every paragraph. markitdown (pdfminer.six) is worse still: on
+   columns** — it emits a left-column sentence, then the right column's first
+   paragraph, then the next left sentence, then that same right paragraph
+   again (A1 B0 A2 B0 …), which keeps within-column order (and accidentally
+   passes 10 of the 16 cross-column pairs, hence the flattering-looking
+   16/22) but breaks the actual reading flow after every sentence. markitdown
+   (pdfminer.six) is worse still: on
    top of interleaving it **scrambles words within lines** — the output
    contains `operators  hydropower  Downstream` and `ice  concentrates
    above  The  remaining` — destroying two of the eight key sentences
@@ -143,9 +147,10 @@ cell as "~10 s per document on this CPU".
 ## Verdict
 
 - **Default choice: pymupdf4llm.** Best structure scores, correct column
-  order, byte-exact CJK, 0.65 s/doc, pip-installable in seconds. (Note
+  order, byte-exact CJK, 1.07 s/doc warm (mean over the 5 fixtures in
+  `results.json`), pip-installable in seconds. (Note
   PyMuPDF is AGPL-licensed — check your distribution constraints.)
-- **docling:** only worth ~10 s/doc + 6 GB if you need its layout model for
+- **docling:** only worth ~12 s/doc warm + 6 GB if you need its layout model for
   scanned or visually complex documents — and **do not use it on CJK
   documents** without checking for the radical-substitution corruption.
 - **markitdown (for PDFs):** structurally a plain-text extractor with pipe
@@ -186,11 +191,11 @@ and records those columns as `not_run` with the probe error.
   where docling/marker's ML pipelines are supposed to shine, so the "docling
   buys nothing" finding must not be extrapolated to scanned documents.
 - **marker-pdf: not run.** The package installed, but its model weights
-  (~1 GB) could not be fetched from this network: `models.datalab.to`
-  (surya's S3 CDN) stalls indefinitely, and the HuggingFace fallbacks
-  (`huggingface.co` and `hf-mirror.com`, repos `datalab-to/*`) delivered
-  ~2–15 kB/s. Three attempts totalling ~55 minutes were aborted; the column
-  is recorded as `not_run` in `results.json` with this reason.
+  (~1 GB) could not be fetched from this network. The column is recorded as
+  `not_run` in `results.json`, with the stored reason (verbatim): "model
+  weights unfetchable from this network: models.datalab.to resets
+  connections, huggingface.co and hf-mirror.com stall at ~10 kB/s for
+  datalab-to repos; 4 attempts over 2 sessions aborted".
 - **Single run per cell** (though a cold/warm pair each, and all outputs were
   byte-identical across the two runs, so variance in *scores* is nil; timing
   variance is unmeasured).

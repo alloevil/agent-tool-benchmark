@@ -82,5 +82,13 @@ python3 -m http.server 8974 --directory fixtures &
 ## Limitations
 
 - Single machine, single run per task — no averaging; network variance uncontrolled.
-- Tasks were completed by hand-written scripts. Autonomous LLM-planning mode (token cost, success rate) was not measured; ego's official 2.5× speed claim targets that mode, so this benchmark neither confirms nor refutes it.
+- Tasks were completed by hand-written scripts. Autonomous LLM-planning mode
+  (token cost, success rate) was not measured. ego's official 2.5× speed claim
+  is measured against Vercel's agent-browser and credits composing a multi-step
+  task as code rather than driving a call-and-wait CLI loop; this benchmark ran
+  scripted tasks, not LLM planning, so it neither confirms nor refutes that
+  claim.
+- The results table restates the single-run measurements taken for this suite;
+  the committed charts (`assets/timings.svg`, `assets/scorecard.svg`) plot
+  them, but the per-task CLI output and `time` logs were not committed.
 - ego's official comparison table says browser-use does not inherit Chrome data; in our test browser-use local mode attaches to the real Chrome and login state simply works. The real difference is **isolation**, not login-state availability.

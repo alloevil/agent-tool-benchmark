@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="140" viewBox="0 0 1200 140" role="img" aria-labelledby="title desc">
   <title id="title">How every number in this repository is produced</title>
-  <desc id="desc">Four stages left to right: one rig — both tools on one machine in the same hour; full scripts — every task is a committed script at tasks/&lt;tool&gt;/&lt;task&gt;.sh; captured run — no run, no number; no invented numbers — limits stated, every time.</desc>
+  <desc id="desc">Four stages left to right: one rig — both tools on one machine in the same hour; full scripts — every task has a committed runner (run.py, or tasks/&lt;tool&gt;/&lt;task&gt;.sh in the browser suite); captured run — no run, no number; no invented numbers — limits stated, every time.</desc>
 
   <rect width="1200" height="140" rx="20" fill="#0B0E14"/>
 
@@ -21,7 +21,7 @@
         <path d="M16 30 V38 H24"/>
       </g>
       <text x="0" y="92" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#E6EDF3">FULL SCRIPTS</text>
-      <text x="0" y="122" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8B949E">tasks/&lt;tool&gt;/&lt;task&gt;.sh</text>
+      <text x="0" y="122" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#8B949E">run.py · tasks/*.sh</text>
     </g>
 
     <g id="stage-run" transform="translate(562 0)">

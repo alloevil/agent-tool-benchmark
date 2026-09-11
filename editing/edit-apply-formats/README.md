@@ -5,7 +5,7 @@ coding agents, run on 2026-08-19.
 
 **TL;DR** — On clean files everything works. The differences are structural
 failure modes: whole-file rewrite **silently reverts concurrent changes**
-(3 CORRUPT), aider's and Cline's SEARCH/REPLACE **edit the wrong occurrence**
+(4 CORRUPT), aider's and Cline's SEARCH/REPLACE **edit the wrong occurrence**
 when the target text appears twice, and **nobody handles CRLF or tab-retabbed
 files well** — the only safe behaviors there were git apply / GNU patch
 refusing outright. Cline's fallback matching produced **zero rejections and
@@ -40,7 +40,7 @@ agent's stale view of it. No LLM is involved; token costs are counted with
 
 ## Task design
 
-Base fixture: a 50-line Python calculator (scenarios 09 and 11 use their own
+Base fixture: a 47-line Python calculator (scenarios 09 and 11 use their own
 generated files). The canonical intended change adds a `ZeroDivisionError`
 guard to `divide()`. Each scenario perturbs the on-disk file relative to the
 agent's stale view, or stresses a structural property of the payload:
@@ -93,10 +93,11 @@ editblock 622, udiff 637, str_replace 710, whole-file 1768. Per-scenario
 numbers are in `payload_tokens.json`.
 
 Latency: all appliers stay far under 100 ms even on the 5000-line file
-(slowest cell in scenario 11: cline-replace at 15.1 ms, which includes a bun
-subprocess launch; the pure-Python appliers are ≤12 ms). The only >100 ms
-cells anywhere in `results.json` are the first aider/openhands import in
-scenario 01 (one-time module load, 0.37–0.51 s).
+(slowest cell in scenario 11: cline-replace at 21.7 ms, which includes a bun
+subprocess launch; the next slowest is str_replace at 16.8 ms and the other
+pure-Python appliers are ≤2.2 ms). The only >100 ms cells anywhere in
+`results.json` are the first aider/openhands import in scenario 01 (one-time
+module load, 0.53–0.58 s).
 
 ## Key findings
 
@@ -104,8 +105,8 @@ scenario 01 (one-time module load, 0.37–0.51 s).
    edits.** Zero REJECTs, 4 CORRUPTs; scenarios 02 and 05 silently reverted
    the concurrent change. The new scenarios add the cost dimension: on the
    5000-line file the whole-file payload is 25 099 tokens vs ≤76 for every
-   diff-shaped format — the 2.8× gap measured on the 50-line file becomes
-   ~370× at 5000 lines.
+   diff-shaped format — the 2.8× gap averaged over the eight small-file
+   payloads becomes ~370× on the 5000-line file (25 099 / 68).
 2. **Cline's fallback ladder trades rejections for corruptions.** Its applier
    tries exact match, then line-trimmed match, then block-anchor match, then
    a full-file scan. Result: the only non-trivial applier with **zero**
@@ -129,7 +130,9 @@ scenario 01 (one-time module load, 0.37–0.51 s).
 4. **Missing trailing newlines are a real corruption class.** In
    10-eof-newline, aider-udiff, editblock, and cline-replace all appended a
    trailing newline that neither the original file nor the expected output
-   has (verified: each output is exactly `expected + "\n"`). git apply and
+   has (the committed `results.json` stores only the CORRUPT status for this
+   cell, not the output bytes, so "exactly `expected + "\n"`" is consistent
+   with the recorded result but not byte-verified in the repo). git apply and
    GNU patch handle it via the `\ No newline at end of file` marker;
    str_replace and apply_patch preserve the missing newline exactly. One
    byte, but byte-exact appliers exist, so it is measurable — and it flips

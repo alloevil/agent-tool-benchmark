@@ -1,6 +1,8 @@
 name: Smoke
 # Structural check for the benchmark suites: every task script parses under bash -n and
-# every tool under a suite has the same task set, so "same tasks" stays true as suites grow.
+# every tool under a suite covers the same task ids, so "same tasks" stays true as suites
+# grow. A tool may add an id only if it is explicitly allowed below (browser-use cannot
+# attempt ego lite's parallel task); anything else fails the job.
 # Real timings are captured on a fixed local machine by design and are not reproduced in CI.
 on:
   push:
@@ -23,13 +25,31 @@ jobs:
           echo "parsed $n task scripts"; test "$n" -gt 0
       - name: task sets match across tools in each suite
         run: |
-          set -e
+          set -eu
+          # Documented exception: ego lite has a 5th task (parallel Spaces) that
+          # browser-use cannot attempt locally — see browser/ego-lite-vs-browser-use/README.md.
+          allow_extra="./browser/ego-lite-vs-browser-use/tasks/ego:05"
+          fail=0
           for suite in $(find . -type d -name tasks -not -path './.git/*'); do
             ref=""
             for tool in "$suite"/*/; do
-              set=$(ls "$tool" | sed -E 's/^([0-9]+)-.*/\1/' | sort | tr '\n' ' ')
-              if [ -z "$ref" ]; then ref="$set"; elif [ "$set" != "$ref" ]; then
-                echo "::warning::$suite: task ids differ for $(basename "$tool"): [$set] vs [$ref]"; fi
+              tool=${tool%/}
+              ids=$(ls "$tool" | sed -E 's/^([0-9]+)-.*/\1/' | sort)
+              if [ -z "$ref" ]; then
+                ref="$ids"; echo "$suite: reference task ids [$ref] from $(basename "$tool")"; continue
+              fi
+              missing=$(comm -23 <(echo "$ref") <(echo "$ids"))
+              extra=$(comm -13 <(echo "$ref") <(echo "$ids"))
+              if [ -n "$missing" ]; then
+                echo "::error::$tool: missing task ids [$missing] that the reference set has"; fail=1
+              fi
+              for id in $extra; do
+                if [ "$allow_extra" = "$tool:$id" ]; then
+                  echo "::notice::$tool: allowed extra task $id (documented in the suite README)"
+                else
+                  echo "::error::$tool: task $id is not in the reference set [$ref]"; fail=1
+                fi
+              done
             done
-            echo "$suite: $ref"
           done
+          exit $fail

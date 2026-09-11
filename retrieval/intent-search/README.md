@@ -23,11 +23,12 @@ comment — while both zg modes stay at 3–4/4. The token claim, however,
 inverts: **zg's output costs 2.3× more tokens than rg's overall** (4,378 vs
 1,890 cl100k tokens for all 12 queries), because zg always returns a
 fixed-size ranked list while rg's failures are nearly free (0–22 tokens).
-zg saves tokens only in the scenario where rg *succeeds noisily* (`timeout`:
-655 rg tokens vs 362). And a surprise: on this corpus the pure-BM25 `--fts`
-mode found the right file more reliably than the hybrid mode that adds
-vectors — the one hybrid miss (`url-credentials`) is a case where vector
-similarity actively drowned the lexically-correct answer.
+zg saves tokens only on the two queries where rg *succeeds noisily*
+(`timeout`: 655 rg tokens vs 362; `no_proxy`: 445 vs 360). And a surprise: on
+this corpus the pure-BM25 `--fts` mode found the right file more reliably
+than the hybrid mode that adds vectors — the one hybrid miss
+(`url-credentials`) is a case where vector similarity actively drowned the
+lexically-correct answer.
 
 ## What this measures
 
@@ -58,8 +59,8 @@ Three adapters, all deterministic CLI invocations in `run.py`:
 | Tokenizer | tiktoken 0.9.0, `cl100k_base`, counted over each tool's full raw stdout |
 | Python | 3.12.8 |
 
-zg index: **6.9 s cold build, 5.8 MB on disk** (the source it indexes is
-~230 KB — a 25× storage overhead at this scale).
+zg index: **7.0 s cold build, 5.8 MB on disk** (the source it indexes is
+~184 KiB — 18 files, 5,642 lines — a ~31× storage overhead at this scale).
 
 ## Task design
 
@@ -137,15 +138,15 @@ Per query (file@5/strict@5, tokens):
 
 1. **The vocabulary gap is real, binary, and exactly where zg earns its
    keep.** All four vocab-gap queries are total rg failures — `pooling`,
-   `credentials`, and `leak` each match exactly one docstring/comment line
-   (never the implementation), `truthy` and `pagination` match nothing at
-   all. Both zg modes answered 3–4 of 4 with the correct function ranked in
-   the top 5. If an agent's first grep guess misses like this, the recovery
-   round-trips are precisely the tool calls zg claims to eliminate — on this
-   axis the claim is directionally supported.
+   `credentials`, `resend`, and `leak` each match exactly one docstring/comment
+   line (never the implementation). In the conceptual tier, `truthy` and
+   `pagination` match nothing at all. Both zg modes answered 3–4 of 4 with the
+   correct function ranked in the top 5. If an agent's first grep guess misses
+   like this, the recovery round-trips are precisely the tool calls zg claims
+   to eliminate — on this axis the claim is directionally supported.
 2. **Where naming cooperates, grep concedes nothing.** named-direct:
    4/4 strict for all three tools. rg was 350× faster (5 ms vs 1.5–1.8 s)
-   and needed no 6.9 s index or 5.8 MB of state. `redirect` in requests
+   and needed no 7.0 s index or 5.8 MB of state. `redirect` in requests
    lands you in `sessions.py` inside a millisecond; no embedding needed.
 3. **The token-saving claim fails on this corpus — zg cost 2.3× more
    overall.** zg's output is a fixed-shape ranked list: ~325–393 tokens
@@ -186,7 +187,7 @@ Per query (file@5/strict@5, tokens):
   misses), fall back to intent search only when the keyword guess returns
   nothing useful. On this query set that policy gets 6/12 for ~free and
   recovers the rest for one zg call each — strictly cheaper in both tokens
-  and wall time than always-zg (which also pays 6.9 s + 5.8 MB per corpus up
+  and wall time than always-zg (which also pays 7.0 s + 5.8 MB per corpus up
   front).
 - The `--fts` mode is underrated: same index, no embedding inference, 0.3 s
   faster, and it went 12/12 on files with raw NL sentences. If you have the
@@ -225,7 +226,7 @@ reported index build time is always cold.
   keyword per query in `queries.json` before running anything, and by
   drawing keywords from the query's own wording — but a different author
   would guess differently, and a real agent gets more than one guess.
-- **zg amortized costs are underweighted**: 6.9 s cold index + 5.8 MB disk
+- **zg amortized costs are underweighted**: 7.0 s cold index + 5.8 MB disk
   per corpus, ~1.5–1.8 s per query (local CPU embedding at query time for
   hybrid) vs 5 ms for rg. In an interactive agent loop, latency is also a
   cost, just not a token-denominated one.
