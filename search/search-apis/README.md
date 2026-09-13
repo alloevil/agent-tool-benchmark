@@ -48,5 +48,11 @@ summary per provider.
   time-varying. The run date must be recorded with any published table.
 - hit@5 with URL substrings measures "found an authoritative page", not
   answer quality or content extraction fidelity.
-- Endpoint shapes verified against provider docs as of 2026-08; `firecrawl`
-  uses the v2 `/search` response shape and may need adjusting.
+- Endpoint **paths** re-checked 2026-09-13 with an unauthenticated probe
+  (`curl -X POST https://api.exa.ai/search -H 'Content-Type: application/json' -d '{"query":"test"}'`,
+  same for tavily, serper, firecrawl): exa answers 402, tavily 401, serper 403, firecrawl's
+  v2 `/search` 200 — auth or quota errors rather than 404, so the paths are live.
+  `api.search.brave.com` and `s.jina.ai` were unreachable from the host that ran the probe,
+  so their paths remain unverified. Response **shapes** were last compared against provider
+  docs by hand in 2026-08; no committed fixture re-checks them, because this suite has no
+  results yet. `firecrawl` uses the v2 `/search` response shape and may need adjusting.
