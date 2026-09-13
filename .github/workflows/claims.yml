@@ -1,0 +1,30 @@
+name: claims
+
+# Runs the receipts behind claims.json: every number the READMEs publish - the suite scorecards,
+# the token totals, the recall/precision averages, the corpus and task counts - must still be
+# printed by the command next to it, which recomputes it from the committed results.json,
+# payload_tokens.json, expected fixtures and raw converter outputs. Weekly as well as on push,
+# because a committed capture can drift from the prose that quotes it.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: published numbers still reproduce
+    runs-on: ubuntu-latest
+    steps:
+      # Pinned to the same commit as smoke.yml.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      # No install step: every receipt reads committed files with python3 (standard library
+      # only) and bash. The suites' own dependencies (aider, openhands, docling, jedi, zg,
+      # bun, the fetched rg/ctags binaries) are deliberately not required - the checks
+      # recompute the published figures from the committed captures rather than re-running
+      # the tools, and the figures that do depend on this machine or the network are the
+      # claims marked `manual` in claims.json.
+      - uses: alloevil/verify-claims@v0.1.0

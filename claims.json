@@ -1,0 +1,1185 @@
+{
+  "project": "agent-tool-benchmark",
+  "url": "https://github.com/alloevil/agent-tool-benchmark",
+  "repository": "https://github.com/alloevil/agent-tool-benchmark",
+  "updated": "2026-09-13",
+  "notes": "Every figure published in README.md and in the suites' own READMEs, with the command that recomputes it from committed data. Of the five suites, four ship a results.json produced by a run.py; the browser suite's numbers are single-run measurements whose console output was never committed (they are manual below, and the checks that remain machine-readable are its committed charts, fixtures and task scripts). The search suite has no captured run at all, so it publishes no numbers - only its committed query suite, its harness and a dated endpoint probe. Timings and token counts are single-run figures by design: these checks recompute what the artifacts record, not a fresh measurement of the tools.",
+  "claims": [
+    {
+      "id": "editing-scorecard-tallies",
+      "claim": "The pass/reject/corrupt scorecard holds across all 13 scenarios: git apply 10/3/0, GNU patch 11/2/0, aider-udiff 10/1/2, editblock 9/1/3, str_replace 10/2/1, codex-applypatch 9/1/3, cline-replace 9/0/4, whole-file 9/0/4.",
+      "value": "13 scenarios = 10 PASS / 3 REJECT / 0 CORRUPT for git-apply",
+      "metric": "outcome counts per applier over the committed results.json matrix",
+      "method": "results.json records one status per (scenario, applier); the command counts PASS/REJECT/CORRUPT per applier column.",
+      "repro": "python3 -m json.tool editing/edit-apply-formats/results.json",
+      "evidence": "editing/edit-apply-formats/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,collections as C;R=json.load(open(\"editing/edit-apply-formats/results.json\"));A=list(next(iter(R.values())));c={a:C.Counter(r[a][\"status\"] for r in R.values()) for a in A};print(\"scenarios\",len(R));[print(a,c[a][\"PASS\"],c[a][\"REJECT\"],c[a][\"CORRUPT\"]) for a in A]'",
+        "expect": {
+          "equals": "scenarios 13\ngit-apply 10 3 0\ngnu-patch 11 2 0\naider-udiff 10 1 2\neditblock 9 1 3\nstrreplace 10 2 1\ncodex-applypatch 9 1 3\ncline-replace 9 0 4\nwholefile 9 0 4"
+        },
+        "timeout": 60,
+        "note": "applier keys are the results.json column names; in the README strreplace is written str_replace and wholefile is whole-file."
+      }
+    },
+    {
+      "id": "editing-token-totals-13-scenarios",
+      "claim": "Payload token cost (cl100k_base) summed over all 13 scenarios: cline 914, applypatch 1027, editblock 1033, udiff 1110, str_replace 1229, whole-file 27756.",
+      "value": "pline 914 / applypatch 1027 / editblock 1033 / udiff 1110 / str_replace 1229 / whole-file 27756",
+      "metric": "cl100k_base token count of every payload, summed over the 13 scenarios",
+      "method": "payload_tokens.json stores one count per (scenario, format); the command sums each format column.",
+      "repro": "python3 -m json.tool editing/edit-apply-formats/payload_tokens.json",
+      "evidence": "editing/edit-apply-formats/payload_tokens.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;T=json.load(open(\"editing/edit-apply-formats/payload_tokens.json\"));[print(f,sum(v[f] for v in T.values())) for f in [\"cline\",\"applypatch\",\"editblock\",\"udiff\",\"strreplace\",\"wholefile\"]]'",
+        "expect": {
+          "equals": "cline 914\napplypatch 1027\neditblock 1033\nudiff 1110\nstrreplace 1229\nwholefile 27756"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "editing-token-totals-8-small-file-scenarios",
+      "claim": "Over the original 8 small-file scenarios the token totals are cline 545, applypatch 595, editblock 622, udiff 637, str_replace 710, whole-file 1768.",
+      "value": "8 scenarios: 545 / 595 / 622 / 637 / 710 / 1768",
+      "metric": "cl100k_base token count summed over scenarios 01-08",
+      "method": "the five later scenarios (09-13) are excluded; the command sums the 01-08 rows of payload_tokens.json, selected by their leading two-digit key.",
+      "repro": "python3 -m json.tool editing/edit-apply-formats/payload_tokens.json",
+      "evidence": "editing/edit-apply-formats/payload_tokens.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;T=json.load(open(\"editing/edit-apply-formats/payload_tokens.json\"));S=[k for k in T if k<\"09\"];print(\"scenarios\",len(S));[print(f,sum(T[k][f] for k in S)) for f in [\"cline\",\"applypatch\",\"editblock\",\"udiff\",\"strreplace\",\"wholefile\"]]'",
+        "expect": {
+          "equals": "scenarios 8\ncline 545\napplypatch 595\neditblock 622\nudiff 637\nstrreplace 710\nwholefile 1768"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "editing-large-file-token-cost",
+      "claim": "In scenario 11 the whole-file rewrite costs 25099 tokens against 61-76 for every diff-shaped format.",
+      "value": "whole-file 25099 tokens, every other format 61-76",
+      "metric": "cl100k_base tokens of the scenario-11 payloads",
+      "method": "the command reads the 11-large-file row of payload_tokens.json and prints the whole-file cell plus the min/max of the five diff-shaped formats.",
+      "repro": "python3 -m json.tool editing/edit-apply-formats/payload_tokens.json",
+      "evidence": "editing/edit-apply-formats/payload_tokens.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;T=json.load(open(\"editing/edit-apply-formats/payload_tokens.json\"))[\"11-large-file\"];o={k:v for k,v in T.items() if k!=\"wholefile\"};print(\"wholefile\",T[\"wholefile\"]);print(\"diff-shaped min\",min(o.values()),\"max\",max(o.values()))'",
+        "expect": {
+          "equals": "wholefile 25099\ndiff-shaped min 61 max 76"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "editing-latency-ceiling",
+      "claim": "Latency: all appliers stay far under 100 ms even on the 5000-line file (slowest scenario-11 cell: cline-replace at 21.7 ms including a bun subprocess launch, next str_replace 16.8 ms, the other pure-Python appliers <=2.2 ms). The only >100 ms cells anywhere in results.json are the first aider/openhands import in scenario 01 (0.53-0.58 s).",
+      "value": "scenario-11 max 0.0217 s; two cells over 0.100 s, both in scenario 01",
+      "metric": "wall seconds per (scenario, applier) cell, from results.json",
+      "method": "the command sorts the scenario-11 cells by seconds and lists every cell in the matrix above 0.1 s.",
+      "repro": "python3 -c \"import json;R=json.load(open('editing/edit-apply-formats/results.json'));print(sorted((c['seconds'],a) for a,c in R['11-large-file'].items())[-4:])\"",
+      "evidence": "editing/edit-apply-formats/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;R=json.load(open(\"editing/edit-apply-formats/results.json\"));s11=sorted(((c[\"seconds\"],a) for a,c in R[\"11-large-file\"].items()),reverse=True);print(\"scenario 11 slowest cells:\",\", \".join(a+\" \"+format(s,\".4f\")+\" s\" for s,a in s11));big=sorted(((c[\"seconds\"],k,a) for k,row in R.items() for a,c in row.items() if c[\"seconds\"]>0.1),reverse=True);print(\"cells over 100 ms:\",len(big));[print(\" \",k,a,format(s,\".4f\")+\" s\") for s,k,a in big]'",
+        "expect": {
+          "equals": "scenario 11 slowest cells: cline-replace 0.0217 s, strreplace 0.0168 s, git-apply 0.0022 s, editblock 0.0022 s, codex-applypatch 0.0022 s, gnu-patch 0.0013 s, aider-udiff 0.0004 s, wholefile 0.0001 s\ncells over 100 ms: 2\n  01-clean strreplace 0.5831 s\n  01-clean aider-udiff 0.5316 s"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "editing-fixture-inventory",
+      "claim": "The suite is 13 scenarios over one 47-line base fixture (scenarios 09 and 11 use their own generated files; scenario 11 is a ~5000-line - exactly 4974-line - generated module), each with an expected output.",
+      "value": "13 scenarios, 47-line base fixture, 4974-line large-file fixture, 13 expected outputs",
+      "metric": "files under fixtures/ and the keys of results.json",
+      "method": "the command counts fixture directories, the results.json scenario keys, the lines of the 01-clean and 11-large-file fixtures, and the expected*.py files.",
+      "repro": "wc -l editing/edit-apply-formats/fixtures/01-clean/file.py editing/edit-apply-formats/fixtures/11-large-file/file.py; ls -d editing/edit-apply-formats/fixtures/*/",
+      "evidence": "editing/edit-apply-formats/fixtures/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,pathlib;F=pathlib.Path(\"editing/edit-apply-formats/fixtures\");R=json.load(open(\"editing/edit-apply-formats/results.json\"));print(\"scenarios\",len(R));print(\"fixture dirs\",len([d for d in F.iterdir() if d.is_dir()]));print(\"base fixture lines\",len((F/\"01-clean/file.py\").read_text().splitlines()));print(\"large-file lines\",len((F/\"11-large-file/file.py\").read_text().splitlines()));print(\"expected outputs\",len(list(F.glob(\"*/expected*.py\"))))'",
+        "expect": {
+          "equals": "scenarios 13\nfixture dirs 13\nbase fixture lines 47\nlarge-file lines 4974\nexpected outputs 13"
+        },
+        "timeout": 60,
+        "note": "the README writes scenario 11 as '~5000-line'; the exact count is 4974."
+      }
+    },
+    {
+      "id": "editing-missing-trailing-newline",
+      "claim": "In scenario 10 (eof-newline) three appliers return CORRUPT - aider-udiff, editblock and cline-replace - while git apply, GNU patch, str_replace and apply_patch PASS; the suite reads this as the added-trailing-newline corruption class, and results.json stores only the status for this cell, not the output bytes.",
+      "value": "3 CORRUPT (aider-udiff, editblock, cline-replace) / 5 PASS",
+      "metric": "statuses of the 10-eof-newline row and the keys stored per cell",
+      "method": "the command lists the CORRUPT and PASS appliers of that scenario and prints the keys of one cell to show that no output bytes are committed.",
+      "repro": "python3 -m json.tool editing/edit-apply-formats/results.json | sed -n '/10-eof-newline/,/12-overlapping/p'",
+      "evidence": "editing/edit-apply-formats/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;S=json.load(open(\"editing/edit-apply-formats/results.json\"))[\"10-eof-newline\"];print(\"CORRUPT\",len([a for a,s in S.items() if s[\"status\"]==\"CORRUPT\"]),\", \".join(a for a,s in S.items() if s[\"status\"]==\"CORRUPT\"));print(\"PASS\",len([a for a,s in S.items() if s[\"status\"]==\"PASS\"]),\", \".join(a for a,s in S.items() if s[\"status\"]==\"PASS\"));print(\"REJECT\",len([a for a,s in S.items() if s[\"status\"]==\"REJECT\"]));print(\"keys stored per cell\",sorted(next(iter(S.values())).keys()))'",
+        "expect": {
+          "equals": "CORRUPT 3 aider-udiff, editblock, cline-replace\nPASS 5 git-apply, gnu-patch, strreplace, codex-applypatch, wholefile\nREJECT 0\nkeys stored per cell ['error', 'seconds', 'status']"
+        },
+        "timeout": 60,
+        "note": "the trailing-newline reading of the three corruptions is the README's, and is explicitly not byte-verified in the repo."
+      }
+    },
+    {
+      "id": "editing-corruption-winners",
+      "claim": "git apply and GNU patch are the only appliers with zero corruptions across all 13 scenarios, and Cline's fallback ladder ties the whole-file rewrite for most corruptions (4 each).",
+      "value": "max CORRUPT = 4 (cline-replace, wholefile); git-apply and gnu-patch = 0",
+      "metric": "CORRUPT counts per applier column",
+      "method": "the command counts CORRUPT cells per applier and sorts the columns.",
+      "repro": "python3 -m json.tool editing/edit-apply-formats/results.json",
+      "evidence": "editing/edit-apply-formats/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;R=json.load(open(\"editing/edit-apply-formats/results.json\"));A=list(next(iter(R.values())));n={a:sum(1 for r in R.values() if r[a][\"status\"]==\"CORRUPT\") for a in A};print(\"max\",max(n.values()));[print(a,n[a]) for a in sorted(A,key=lambda x:-n[x])]'",
+        "expect": {
+          "equals": "max 4\ncline-replace 4\nwholefile 4\neditblock 3\ncodex-applypatch 3\naider-udiff 2\nstrreplace 1\ngit-apply 0\ngnu-patch 0"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "editing-wholefile-token-ratio",
+      "claim": "The whole-file payload costs 2.8x the average diff-shaped payload over the eight small-file scenarios, and that gap becomes ~370x on the 5000-line file (25099 / 68).",
+      "value": "2.84x small-file average; 369.1x on the large file (~370x)",
+      "metric": "ratio of the whole-file token total to the mean diff-shaped total",
+      "method": "the README divides 1768 by the mean of 545/595/622/637/710 and 25099 by 68; the command recomputes both from payload_tokens.json.",
+      "repro": "python3 -m json.tool editing/edit-apply-formats/payload_tokens.json",
+      "evidence": "editing/edit-apply-formats/payload_tokens.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,statistics as S;T=json.load(open(\"editing/edit-apply-formats/payload_tokens.json\"));o=[k for k in T if k<\"09\"];wf=sum(T[k][\"wholefile\"] for k in o);diff=[sum(T[k][f] for k in o) for f in [\"udiff\",\"editblock\",\"strreplace\",\"applypatch\",\"cline\"]];print(\"small-file ratio\",format(wf/S.mean(diff),\".2f\"));print(\"large-file ratio\",format(25099/68,\".1f\"))'",
+        "expect": {
+          "equals": "small-file ratio 2.84\nlarge-file ratio 369.1"
+        },
+        "timeout": 60,
+        "note": "the README quotes the small-file ratio as 2.8x and the large-file ratio as ~370x; 25099/68 is 369.1."
+      }
+    },
+    {
+      "id": "documents-heading-recall",
+      "claim": "Heading recall over the five fixtures: pymupdf4llm 9/10, docling 8/10, pdftotext 0/10, markitdown 0/10 (the denominators come from the committed expected/*.json).",
+      "value": "pymupdf4llm 9/10, docling 8/10, pdftotext 0/10, markitdown 0/10",
+      "metric": "expected headings hit, per tool, from results.json heading_recall",
+      "method": "each fixture's expected headings are counted in fixtures/expected/*.json; the command sums heading_recall x heading-count per tool and compares with that total.",
+      "repro": "python3 -m json.tool documents/pdf-to-markdown/results.json",
+      "evidence": "documents/pdf-to-markdown/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,pathlib;T=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"];E={json.load(open(p))[\"name\"]:json.load(open(p)) for p in sorted(pathlib.Path(\"documents/pdf-to-markdown/fixtures/expected\").glob(\"*.json\"))};tot=sum(len(e[\"headings\"]) for e in E.values());print(\"expected headings\",tot);[print(t,int(round(sum(T[t][\"fixtures\"][n][\"heading_recall\"]*len(E[n][\"headings\"]) for n in E))),\"/\",tot) for t in T if T[t][\"status\"]==\"ok\"]'",
+        "expect": {
+          "equals": "expected headings 10\npdftotext 0 / 10\npymupdf4llm 9 / 10\nmarkitdown 0 / 10\ndocling 8 / 10"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-committed-output-headings",
+      "claim": "The committed converter outputs match those scores: markitdown and pdftotext emit no `#`-prefixed line at all (0 headings), pymupdf4llm emits 9 and docling 10 - docling's two extra lines are its CJK headings, whose text no longer matches after the radical substitution.",
+      "value": "0 / 9 / 0 / 10 heading lines in outputs/pdftotext, pymupdf4llm, markitdown, docling",
+      "metric": "`#`-prefixed lines in the committed outputs/*/*.md",
+      "method": "the command counts heading lines in the raw committed output of every tool.",
+      "repro": "grep -c '^#' documents/pdf-to-markdown/outputs/*/[0-9]*.md",
+      "evidence": "documents/pdf-to-markdown/outputs/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib,re;O=pathlib.Path(\"documents/pdf-to-markdown/outputs\");[print(t,sum(len(re.findall(r\"^#\",f.read_text(),re.M)) for f in (O/t).glob(\"*.md\"))) for t in [\"pdftotext\",\"pymupdf4llm\",\"markitdown\",\"docling\"]]'",
+        "expect": {
+          "equals": "pdftotext 0\npymupdf4llm 9\nmarkitdown 0\ndocling 10"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-table-code-cjk-recall",
+      "claim": "Table cell recall (24 cells) is 1.00 for all four tools; code line recall (11 lines) is 1.00 for all four, though docling flattened the block onto a single line; CJK sentences intact (3) is 1.00 for pdftotext, pymupdf4llm and markitdown but 0.00 for docling.",
+      "value": "cells 24: 4x 1.00; code 11: 4x 1.00; CJK 3: 1.00/1.00/1.00/0.00",
+      "metric": "per-metric recall in results.json against the expected-fixture denominators",
+      "method": "the command prints each metric's denominator from expected/*.json, the per-tool score from results.json, and the line count of docling's committed code block.",
+      "repro": "python3 -m json.tool documents/pdf-to-markdown/results.json",
+      "evidence": "documents/pdf-to-markdown/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,pathlib,re;T=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"];E={p.stem:json.load(open(p)) for p in pathlib.Path(\"documents/pdf-to-markdown/fixtures/expected\").glob(\"*.json\")};ok=[t for t in T if T[t][\"status\"]==\"ok\"];print(\"cells\",len(E[\"02-table\"][\"cells\"]),\" \".join(t+\"=\"+str(T[t][\"fixtures\"][\"02-table\"][\"cell_recall\"]) for t in ok));print(\"code lines\",len(E[\"04-code-and-list\"][\"code_lines\"]),\" \".join(t+\"=\"+str(T[t][\"fixtures\"][\"04-code-and-list\"][\"code_recall\"]) for t in ok));print(\"cjk sentences\",len(E[\"05-cjk\"][\"cjk_sentences\"]),\" \".join(t+\"=\"+str(T[t][\"fixtures\"][\"05-cjk\"][\"cjk_intact\"]) for t in ok));d=pathlib.Path(\"documents/pdf-to-markdown/outputs/docling/04-code-and-list.md\").read_text();print(\"docling code block lines\",len(re.search(r\"```(.*?)```\",d,re.S).group(1).strip().splitlines()))'",
+        "expect": {
+          "equals": "cells 24 pdftotext=1.0 pymupdf4llm=1.0 markitdown=1.0 docling=1.0\ncode lines 11 pdftotext=1.0 pymupdf4llm=1.0 markitdown=1.0 docling=1.0\ncjk sentences 3 pdftotext=1.0 pymupdf4llm=1.0 markitdown=1.0 docling=0.0\ndocling code block lines 1"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-two-column-reading-order",
+      "claim": "Two-column reading order over 22 ordered pairs: pymupdf4llm 22/22 and docling 22/22, pdftotext 16/22, markitdown 12/22 (and markitdown drops two of the eight key sentences, sentence recall 0.75).",
+      "value": "22 pairs: 22/22, 22/22, 16/22, 12/22",
+      "metric": "order_pairs_ok / reading_order_correct / sentence_recall in results.json",
+      "method": "the pair total comes from expected/03-two-column.json; the per-tool counts and flags from results.json.",
+      "repro": "python3 -m json.tool documents/pdf-to-markdown/results.json",
+      "evidence": "documents/pdf-to-markdown/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,pathlib;T=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"];E=json.load(open(\"documents/pdf-to-markdown/fixtures/expected/03-two-column.json\"));print(\"expected pairs\",len(E[\"order_pairs\"]),\"sentences\",len(E[\"key_sentences\"]));[print(t,T[t][\"fixtures\"][\"03-two-column\"][\"order_pairs_ok\"],\"correct\" if T[t][\"fixtures\"][\"03-two-column\"][\"reading_order_correct\"] else \"interleaved\",\"sentence_recall\",T[t][\"fixtures\"][\"03-two-column\"][\"sentence_recall\"]) for t in T if T[t][\"status\"]==\"ok\"]'",
+        "expect": {
+          "equals": "expected pairs 22 sentences 8\npdftotext 16/22 interleaved sentence_recall 1.0\npymupdf4llm 22/22 correct sentence_recall 1.0\nmarkitdown 12/22 interleaved sentence_recall 0.75\ndocling 22/22 correct sentence_recall 1.0"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-warm-times-and-ratios",
+      "claim": "Warm wall time per document (mean over the five fixtures): pdftotext 0.054 s, pymupdf4llm 1.073 s, markitdown 1.028 s, docling 12.321 s - the README rounds these to 0.05 / 1.07 / 1.03 / 12.3 s and quotes the derived gaps as ~12x to pymupdf4llm and ~230x to pdftotext, with pdftotext 20x faster than markitdown (11.5x, 226.5x and 18.9x from the unrounded means).",
+      "value": "0.054 / 1.073 / 1.028 / 12.321 s; ratios 11.5x, 226.5x, 18.9x",
+      "metric": "mean of the five warm_s cells per tool",
+      "method": "the command averages the committed warm_s values and divides the means.",
+      "repro": "python3 -m json.tool documents/pdf-to-markdown/results.json",
+      "evidence": "documents/pdf-to-markdown/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,statistics as S;T=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"];w={t:S.mean(v[\"warm_s\"] for v in T[t][\"fixtures\"].values()) for t in T if T[t][\"status\"]==\"ok\"};[print(t,format(v,\".3f\"),\"s\") for t,v in w.items()];print(\"docling/pymupdf4llm\",format(w[\"docling\"]/w[\"pymupdf4llm\"],\".1f\"));print(\"docling/pdftotext\",format(w[\"docling\"]/w[\"pdftotext\"],\".1f\"));print(\"pdftotext/markitdown\",format(w[\"markitdown\"]/w[\"pdftotext\"],\".1f\"))'",
+        "expect": {
+          "equals": "pdftotext 0.054 s\npymupdf4llm 1.073 s\nmarkitdown 1.028 s\ndocling 12.321 s\ndocling/pymupdf4llm 11.5\ndocling/pdftotext 226.5\npdftotext/markitdown 18.9"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-cold-times",
+      "claim": "Cold wall time per document: pdftotext 0.053 s, pymupdf4llm 1.054 s, markitdown 1.021 s; docling's first cold call is 39.381 s (the README rounds it to 39 s) and its remaining cold calls settle at 11.584-13.356 s.",
+      "value": "docling first cold 39.381 s, rest 11.584-13.356 s",
+      "metric": "cold_s cells in results.json",
+      "method": "the command averages cold_s per tool and prints docling's first cold call next to the range of its other four.",
+      "repro": "python3 -m json.tool documents/pdf-to-markdown/results.json",
+      "evidence": "documents/pdf-to-markdown/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,statistics as S;T=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"];f=T[\"docling\"][\"fixtures\"];k=sorted(f);[print(t,format(S.mean(v[\"cold_s\"] for v in T[t][\"fixtures\"].values()),\".3f\"),\"s\") for t in T if T[t][\"status\"]==\"ok\"];print(\"docling first cold\",format(f[k[0]][\"cold_s\"],\".3f\"),\"s\");print(\"docling remaining cold\",format(min(f[x][\"cold_s\"] for x in k[1:]),\".3f\"),\"-\",format(max(f[x][\"cold_s\"] for x in k[1:]),\".3f\"),\"s\")'",
+        "expect": {
+          "equals": "pdftotext 0.053 s\npymupdf4llm 1.054 s\nmarkitdown 1.021 s\ndocling 17.682 s\ndocling first cold 39.381 s\ndocling remaining cold 11.584 - 13.356 s"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-output-token-sums",
+      "claim": "Output tokens over the five documents (cl100k): pdftotext 1093, pymupdf4llm 1117, markitdown 1311, docling 1199.",
+      "value": "1093 / 1117 / 1311 / 1199",
+      "metric": "sum of output_tokens per tool",
+      "method": "the command sums the committed output_tokens cells.",
+      "repro": "python3 -m json.tool documents/pdf-to-markdown/results.json",
+      "evidence": "documents/pdf-to-markdown/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;T=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"];[print(t,sum(v[\"output_tokens\"] for v in T[t][\"fixtures\"].values())) for t in T if T[t][\"status\"]==\"ok\"]'",
+        "expect": {
+          "equals": "pdftotext 1093\npymupdf4llm 1117\nmarkitdown 1311\ndocling 1199"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-determinism",
+      "claim": "All 20 (tool, fixture) conversions - each run cold and warm - produced byte-identical output.",
+      "value": "20/20 conversions deterministic",
+      "metric": "deterministic flags in results.json",
+      "method": "the command counts (tool, fixture) pairs and how many carry deterministic: true.",
+      "repro": "python3 -m json.tool documents/pdf-to-markdown/results.json",
+      "evidence": "documents/pdf-to-markdown/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;T=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"];p=[(t,n) for t in T if T[t][\"status\"]==\"ok\" for n in T[t][\"fixtures\"]];print(\"conversions\",len(p));print(\"deterministic\",sum(1 for t,n in p if T[t][\"fixtures\"][n][\"deterministic\"]))'",
+        "expect": {
+          "equals": "conversions 20\ndeterministic 20"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-fixture-inventory",
+      "claim": "The suite ships five deterministic reportlab fixtures with five committed expected/*.json ground truths, carrying 10 headings, 24 table cells, 22 ordered pairs, 11 code lines and 3 CJK sentences (22 key sentences across the five fixtures).",
+      "value": "5 fixtures, 5 expected files, denominators 10/24/22/11/3",
+      "metric": "fixtures/ and fixtures/expected/*.json",
+      "method": "the command counts the PDFs and the expected files and prints each ground-truth denominator.",
+      "repro": "ls documents/pdf-to-markdown/fixtures/*.pdf documents/pdf-to-markdown/fixtures/expected/",
+      "evidence": "documents/pdf-to-markdown/fixtures/expected/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,pathlib;P=pathlib.Path(\"documents/pdf-to-markdown/fixtures\");E={p.stem:json.load(open(p)) for p in sorted((P/\"expected\").glob(\"*.json\"))};print(\"fixtures\",len(list(P.glob(\"*.pdf\"))));print(\"expected files\",len(E));print(\"headings\",sum(len(e[\"headings\"]) for e in E.values()));print(\"cells\",len(E[\"02-table\"][\"cells\"]));print(\"order pairs\",len(E[\"03-two-column\"][\"order_pairs\"]));print(\"code lines\",len(E[\"04-code-and-list\"][\"code_lines\"]));print(\"cjk sentences\",len(E[\"05-cjk\"][\"cjk_sentences\"]));print(\"key sentences\",sum(len(e[\"key_sentences\"]) for e in E.values()))'",
+        "expect": {
+          "equals": "fixtures 5\nexpected files 5\nheadings 10\ncells 24\norder pairs 22\ncode lines 11\ncjk sentences 3\nkey sentences 22"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-markitdown-word-scrambling",
+      "claim": "markitdown's committed two-column output really is word-scrambled: it contains `operators hydropower Downstream` and `ice concentrates above The remaining` (the README quotes them with the line breaks collapsed), and its only pipe-table output is fixture 02.",
+      "value": "2/2 scrambled fragments present; pipe lines only in 02-table (7 lines)",
+      "metric": "raw text of outputs/markitdown/*.md",
+      "method": "the command collapses whitespace in the committed 03 output and looks for the two fragments the README quotes, then counts pipe-prefixed lines per fixture.",
+      "repro": "grep -n 'hydropower\\|concentrates' documents/pdf-to-markdown/outputs/markitdown/03-two-column.md",
+      "evidence": "documents/pdf-to-markdown/outputs/markitdown/03-two-column.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import re,pathlib;p=pathlib.Path(\"documents/pdf-to-markdown/outputs/markitdown\");t=re.sub(r\"\\s+\",\" \",(p/\"03-two-column.md\").read_text());print(\"scrambled fragments found\",sum(x in t for x in [\"operators hydropower Downstream\",\"ice concentrates above The remaining\"]));[print(f.name,sum(1 for l in f.read_text().splitlines() if l.startswith(\"|\"))) for f in sorted(p.glob(\"*.md\"))]'",
+        "expect": {
+          "equals": "scrambled fragments found 2\n01-simple.md 0\n02-table.md 7\n03-two-column.md 0\n04-code-and-list.md 0\n05-cjk.md 0"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-docling-cjk-substitution",
+      "claim": "docling's committed CJK output substitutes visually identical CJK Radicals for the ideographs: U+6C34 (water) appears 0 times and U+2F54 (its radical) 6 times.",
+      "value": "U+6C34 0 times, U+2F54 6 times in outputs/docling/05-cjk.md",
+      "metric": "codepoint counts in the committed docling output",
+      "method": "the command counts the two codepoints and the total number of CJK Radical block characters in the file.",
+      "repro": "grep -n '⽔' documents/pdf-to-markdown/outputs/docling/05-cjk.md | head",
+      "evidence": "documents/pdf-to-markdown/outputs/docling/05-cjk.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;t=pathlib.Path(\"documents/pdf-to-markdown/outputs/docling/05-cjk.md\").read_text();print(\"U+6C34 occurrences\",t.count(chr(0x6C34)),\"| U+2F54 occurrences\",t.count(chr(0x2F54)),\"| CJK radical chars\",sum(1 for c in t if 0x2F00<=ord(c)<=0x2FDF))'",
+        "expect": {
+          "equals": "U+6C34 occurrences 0 | U+2F54 occurrences 6 | CJK radical chars 21"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-list-nesting-degradation",
+      "claim": "Nested list markers degrade everywhere: pymupdf4llm turned the three level-2 bullets into stray `I` glyphs and docling rendered the same three as `n`, in both cases for the three expected level-2 items (schema validation, null-rate audit, window normalisation).",
+      "value": "3 stray `I` markers (pymupdf4llm), 3 `n` markers (docling)",
+      "metric": "matches for the three level-2 bullet texts in the committed outputs",
+      "method": "the command regex-matches each level-2 bullet text behind its stray glyph in outputs/pymupdf4llm/04-code-and-list.md and outputs/docling/04-code-and-list.md.",
+      "repro": "grep -n 'I schema validation\\|n schema validation' documents/pdf-to-markdown/outputs/*/04-code-and-list.md",
+      "evidence": "documents/pdf-to-markdown/outputs/pymupdf4llm/04-code-and-list.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import re,pathlib;P=pathlib.Path(\"documents/pdf-to-markdown/outputs\");items=\"(schema validation|null-rate audit|window normalisation)\";p=(P/\"pymupdf4llm/04-code-and-list.md\").read_text();d=(P/\"docling/04-code-and-list.md\").read_text();print(\"pymupdf4llm stray I markers\",len(re.findall(\"I \"+items,p)));print(\"docling n markers\",len(re.findall(\"n \"+items,d)))'",
+        "expect": {
+          "equals": "pymupdf4llm stray I markers 3\ndocling n markers 3"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-marker-not-run",
+      "claim": "marker-pdf is recorded as not_run in results.json, with the reason that its model weights could not be fetched from this network.",
+      "value": "marker: not_run",
+      "metric": "the marker entry of results.json",
+      "method": "the command prints the status and reason of the marker column.",
+      "repro": "python3 -m json.tool documents/pdf-to-markdown/results.json",
+      "evidence": "documents/pdf-to-markdown/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;d=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"][\"marker\"];print(\"status\",d[\"status\"]);print(\"reason\",d[\"reason\"][:64])'",
+        "expect": {
+          "equals": "status not_run\nreason model weights unfetchable from this network: models.datalab.to r"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-install-footprints",
+      "claim": "Installed footprint: pymupdf4llm ~120 MB, markitdown ~10 MB, docling 5.5 GB + 642 MB of HF models, marker-pdf 5.3 GB + ~1 GB of weights - the ~45x install-size gap to pymupdf4llm follows from those figures.",
+      "value": "~120 MB / ~10 MB / 5.5 GB + 642 MB / 5.3 GB + ~1 GB",
+      "metric": "size of the installed tool environments",
+      "method": "measured by du/pip inspection of the venvs built for the run; no venv size is committed and a clean checkout has none installed.",
+      "repro": "python3 -m venv /tmp/v && /tmp/v/bin/pip install docling 'markitdown[pdf]' pymupdf4llm && du -sh /tmp/v ~/.cache/huggingface",
+      "evidence": "documents/pdf-to-markdown/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the figures are the size of the venvs this machine built for the run (~6 GB of downloads plus a 642 MB model cache); nothing in the repo records them, and recomputing them from a clean checkout needs the network and ~6 GB of disk. The tool versions and per-tool timings that are committed are machine-checked instead."
+      }
+    },
+    {
+      "id": "code-search-micro-averages",
+      "claim": "Micro-averaged reference recall/precision: ripgrep 0.95/0.51, ctags 0.00/0.00, tree-sitter 0.86/0.82, jedi 0.91/1.00.",
+      "value": "0.95/0.51, 0.00/0.00, 0.86/0.82, 0.91/1.00 (0.952 / 0.513 / 0.857 / 0.905 stored)",
+      "metric": "true sites found over true sites (recall) and over non-neutral results (precision)",
+      "method": "the command recomputes both ratios (to 3 decimals, the precision of the stored micro_avg) from the per-symbol hits/missed/false_positives in results.json and prints the micro_avg the file stores alongside them; ctags returns no scoreable result, so its precision ratio is undefined and stored as 0.00.",
+      "repro": "python3 -m json.tool retrieval/code-search/results.json",
+      "evidence": "retrieval/code-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;R=json.load(open(\"retrieval/code-search/results.json\"))[\"results\"];H=lambda t:sum(x[\"hits\"] for x in R[t][\"per_symbol\"].values());TT=lambda t:sum(x[\"true_total\"] for x in R[t][\"per_symbol\"].values());FP=lambda t:sum(len(x[\"false_positives\"]) for x in R[t][\"per_symbol\"].values());D=lambda n,d:\"undefined\" if d==0 else format(n/d,\".3f\");[print(t,\"recomputed\",D(H(t),TT(t)),D(H(t),H(t)+FP(t)),\"stored\",format(R[t][\"micro_avg\"][\"recall\"],\".3f\"),format(R[t][\"micro_avg\"][\"precision\"],\".3f\")) for t in R]'",
+        "expect": {
+          "equals": "ripgrep recomputed 0.952 0.513 stored 0.952 0.513\nctags recomputed 0.000 0.000 stored 0.000 0.000\ntree-sitter recomputed 0.857 0.818 stored 0.857 0.818\njedi recomputed 0.905 1.000 stored 0.905 1.000"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-per-symbol-table",
+      "claim": "The per-symbol recall/precision table over the 7 symbols: ripgrep 1.00/0.50, 1.00/0.31, 0.67/0.50, 1.00/0.60, 1.00/1.00, 1.00/1.00, 1.00/0.60; tree-sitter 1.00/1.00, 1.00/0.50, 0.67/1.00, 1.00/1.00, 0.00/undefined, 1.00/1.00, 1.00/1.00; jedi 1.00/1.00, 1.00/1.00, 0.67/1.00, 1.00/1.00, 0.50/1.00, 1.00/1.00, 1.00/1.00; ctags 0.00 everywhere (precision undefined except flush, 0.00).",
+      "value": "28 recall/precision cells, one row per symbol",
+      "metric": "per-symbol recall and precision in results.json",
+      "method": "the command prints, for each symbol in ground-truth order, the four tools' recall/precision cells; an undefined precision (no scoreable result) prints as `undefined` where the README writes a dash.",
+      "repro": "python3 -m json.tool retrieval/code-search/results.json",
+      "evidence": "retrieval/code-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;R=json.load(open(\"retrieval/code-search/results.json\"))[\"results\"];T=[\"ripgrep\",\"ctags\",\"tree-sitter\",\"jedi\"];Q=lambda v:\"undefined\" if v is None else format(v,\".2f\");G=lambda s:[R[t][\"per_symbol\"][s] for t in T];[print(s,\" \".join(Q(x[\"recall\"])+\"/\"+Q(x[\"precision\"]) for x in G(s))) for s in R[\"ripgrep\"][\"per_symbol\"]]'",
+        "expect": {
+          "equals": "handler 1.00/0.50 0.00/undefined 1.00/1.00 1.00/1.00\nflush 1.00/0.31 0.00/0.00 1.00/0.50 1.00/1.00\nCache 0.67/0.50 0.00/undefined 0.67/1.00 0.67/1.00\nnormalize 1.00/0.60 0.00/undefined 1.00/1.00 1.00/1.00\nhandle_ping 1.00/1.00 0.00/undefined 0.00/undefined 0.50/1.00\nroute 1.00/1.00 0.00/undefined 1.00/1.00 1.00/1.00\nLogger 1.00/0.60 0.00/undefined 1.00/1.00 1.00/1.00"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-corpus-and-ground-truth",
+      "claim": "The corpus is a committed 11-file, 266-line Python project and the ground truth classifies every word-boundary occurrence of 7 symbols: 21 true sites, 23 neutral sites and 19 trap sites.",
+      "value": "11 files, 266 lines, 7 symbols, 21 true / 23 neutral / 19 trap sites",
+      "metric": "files and lines under corpus/, categories in ground_truth.json",
+      "method": "the command sums the lines of every committed corpus/*.py and counts the ground-truth categories.",
+      "repro": "find retrieval/code-search/corpus -name '*.py' -exec wc -l {} + | tail -1",
+      "evidence": "retrieval/code-search/ground_truth.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,pathlib;P=pathlib.Path(\"retrieval/code-search/corpus\");F=sorted(P.rglob(\"*.py\"));G=json.load(open(\"retrieval/code-search/ground_truth.json\"))[\"symbols\"];print(\"corpus files\",len(F));print(\"corpus lines\",sum(len(f.read_text().splitlines()) for f in F));print(\"symbols\",len(G));print(\"true sites\",sum(len(s[\"true_sites\"]) for s in G));print(\"neutral sites\",sum(len(s.get(\"neutral_sites\",[])) for s in G));print(\"trap sites\",sum(len(s.get(\"trap_sites\",[])) for s in G))'",
+        "expect": {
+          "equals": "corpus files 11\ncorpus lines 266\nsymbols 7\ntrue sites 21\nneutral sites 23\ntrap sites 19"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-corpus-executes",
+      "claim": "The corpus is executable, as the README claims: `python3 app.py` and `python3 test_miniproj.py` both pass.",
+      "value": "app.py prints 4; test_miniproj.py prints `all checks passed`",
+      "metric": "exit status and output of the committed corpus",
+      "method": "the command runs the two committed scripts in place; both are stdlib-only.",
+      "repro": "cd retrieval/code-search/corpus && python3 app.py && python3 test_miniproj.py",
+      "evidence": "retrieval/code-search/corpus/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "cd retrieval/code-search/corpus && python3 app.py && python3 test_miniproj.py",
+        "expect": {
+          "equals": "4\nall checks passed"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-ripgrep-flush-noise",
+      "claim": "On `flush`, ripgrep's precision is 0.31: 9 of its 13 scoreable results were docstrings, comments, a log string and the other class's method.",
+      "value": "13 scoreable results: 4 true sites + 9 false positives, precision 0.31",
+      "metric": "the flush row of the ripgrep per-symbol results",
+      "method": "the command reads the committed flush cell and adds hits and false positives.",
+      "repro": "python3 -m json.tool retrieval/code-search/results.json",
+      "evidence": "retrieval/code-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;x=json.load(open(\"retrieval/code-search/results.json\"))[\"results\"][\"ripgrep\"][\"per_symbol\"][\"flush\"];print(\"hits\",x[\"hits\"],\"true_total\",x[\"true_total\"],\"false_positives\",len(x[\"false_positives\"]),\"scoreable\",x[\"hits\"]+len(x[\"false_positives\"]),\"precision\",format(x[\"precision\"],\".2f\"))'",
+        "expect": {
+          "equals": "hits 4 true_total 4 false_positives 9 scoreable 13 precision 0.31"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-alias-site-missed-by-all",
+      "claim": "An aliased constructor call (stats.py:11) defeated all four tools - not one connected Store(limit=2) back to Cache - and the union of jedi and ripgrep still recovers 20 of the 21 true sites.",
+      "value": "stats.py:11 missed by 4/4 tools; jedi+ripgrep union 20/21",
+      "metric": "missed lists in results.json against the ground-truth true sites",
+      "method": "the command checks the alias site in each tool's missed list and unions the sites found by ripgrep and jedi.",
+      "repro": "grep -n 'Store' retrieval/code-search/corpus/stats.py retrieval/code-search/ground_truth.json",
+      "evidence": "retrieval/code-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;R=json.load(open(\"retrieval/code-search/results.json\"))[\"results\"];G=json.load(open(\"retrieval/code-search/ground_truth.json\"))[\"symbols\"];all_s={x[\"file\"]+\":\"+str(x[\"line\"]) for s in G for x in s[\"true_sites\"]};miss={t:{m for v in R[t][\"per_symbol\"].values() for m in v[\"missed\"]} for t in R};print(\"alias site stats.py:11\");[print(\" \",t,\"missed\" if \"stats.py:11\" in miss[t] else \"found\") for t in R];u=set.union(*[all_s-miss[t] for t in (\"ripgrep\",\"jedi\")]);print(\"ripgrep+jedi union\",str(len(u))+\"/\"+str(len(all_s)))'",
+        "expect": {
+          "equals": "alias site stats.py:11\n  ripgrep missed\n  ctags missed\n  tree-sitter missed\n  jedi missed\nripgrep+jedi union 20/21"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-cold-start",
+      "claim": "Cold start / index build: ctags -R 12.5 ms, tree-sitter full-corpus parse 1.2 ms, jedi's first get_references in a fresh process 197.9 ms (the README rounds it to 198 ms); ripgrep has no index.",
+      "value": "12.5 ms / 1.2 ms / 197.9 ms",
+      "metric": "cold_start seconds in results.json",
+      "method": "the command converts each committed cold-start figure to milliseconds.",
+      "repro": "python3 -m json.tool retrieval/code-search/results.json",
+      "evidence": "retrieval/code-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;d=json.load(open(\"retrieval/code-search/results.json\"))[\"cold_start\"];[print(t,format(v[\"seconds\"]*1000,\".1f\"),\"ms\") for t,v in d.items()]'",
+        "expect": {
+          "equals": "ripgrep 0.0 ms\nctags 12.5 ms\ntree-sitter 1.2 ms\njedi 197.9 ms"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-warm-query-times",
+      "claim": "Warm per-query medians: ctags-readtags 0.55-1.32 ms, tree-sitter 0.68-1.55 ms, jedi 2.23-9.40 ms, ripgrep 6.53-9.96 ms (the README rounds them to 0.6-1.3, 0.7-1.6, 2.2-9.4 and 6.5-10.0 ms).",
+      "value": "min-max per tool, from the 7 committed per-symbol query times",
+      "metric": "query_ms per symbol in results.json",
+      "method": "the command takes the min and max of each tool's per-symbol query_ms.",
+      "repro": "python3 -m json.tool retrieval/code-search/results.json",
+      "evidence": "retrieval/code-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;R=json.load(open(\"retrieval/code-search/results.json\"))[\"results\"];[print(t,format(min(x[\"query_ms\"] for x in R[t][\"per_symbol\"].values()),\".2f\"),\"-\",format(max(x[\"query_ms\"] for x in R[t][\"per_symbol\"].values()),\".2f\"),\"ms\") for t in R]'",
+        "expect": {
+          "equals": "ripgrep 6.53 - 9.96 ms\nctags 0.55 - 1.32 ms\ntree-sitter 0.68 - 1.55 ms\njedi 2.23 - 9.40 ms"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-ctags-answers-definitions",
+      "claim": "ctags is structurally unable to answer the question: its reference recall is 0.00 on all 7 symbols and it returned no scoreable result for 6 of them.",
+      "value": "0.00 recall on 7/7 symbols; 0 scoreable results for 6 symbols",
+      "metric": "ctags per-symbol rows in results.json",
+      "method": "the command counts symbols whose recall is 0 and symbols with no hits and no false positives.",
+      "repro": "python3 -m json.tool retrieval/code-search/results.json",
+      "evidence": "retrieval/code-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;R=json.load(open(\"retrieval/code-search/results.json\"))[\"results\"][\"ctags\"][\"per_symbol\"];print(\"symbols\",len(R));print(\"recall 0.00 on\",sum(1 for x in R.values() if x[\"recall\"]==0.0));print(\"no scoreable result on\",sum(1 for x in R.values() if x[\"hits\"]+len(x[\"false_positives\"])==0))'",
+        "expect": {
+          "equals": "symbols 7\nrecall 0.00 on 7\nno scoreable result on 6"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-versions-match-results",
+      "claim": "The versions in the README's Environment table are the ones results.json recorded: ripgrep 14.1.1, Universal Ctags 6.2.0(b0615e0), tree-sitter 0.24.0, tree-sitter-python 0.23.6, jedi 0.20.0, Python 3.12.8.",
+      "value": "6 version strings read from results.json",
+      "metric": "versions block of results.json against the README Environment table",
+      "method": "the command takes the version number out of each recorded banner (results.json stores the tools' own --version output) and checks it appears in the suite README.",
+      "repro": "python3 -m json.tool retrieval/code-search/results.json",
+      "evidence": "retrieval/code-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,pathlib,re;V=json.load(open(\"retrieval/code-search/results.json\"))[\"versions\"];R=pathlib.Path(\"retrieval/code-search/README.md\").read_text();N=lambda v:re.search(r\"[0-9]+\\.[0-9]+(?:\\.[0-9]+)?(?:\\(b[0-9a-f]+\\))?\",v).group(0);[print(k,N(v),\"in README:\",N(v) in R) for k,v in V.items()]'",
+        "expect": {
+          "equals": "ripgrep 14.1.1 in README: True\nctags 6.2.0(b0615e0) in README: True\npython 3.12.8 in README: True\njedi 0.20.0 in README: True\ntree-sitter 0.24.0 in README: True\ntree-sitter-python 0.23.6 in README: True"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-overall-hits",
+      "claim": "Overall over the 12 intent queries: zg-hybrid 11/12 file@5 and 11/12 strict@5, zg-fts 12/12 file@5 and 10/12 strict@5, ripgrep 6/12 on both.",
+      "value": "file@5: 11/12, 12/12, 6/12",
+      "metric": "hit counts in results.json's overall summary",
+      "method": "the command prints the four hit columns of each tool against n=12.",
+      "repro": "python3 -m json.tool retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;S=json.load(open(\"retrieval/intent-search/results.json\"))[\"summary\"][\"overall\"];[print(t,\"file@5\",str(S[t][\"file_hit@5\"])+\"/\"+str(S[t][\"n\"]),\"file@10\",str(S[t][\"file_hit@10\"])+\"/\"+str(S[t][\"n\"]),\"strict@5\",str(S[t][\"strict_hit@5\"])+\"/\"+str(S[t][\"n\"])) for t in S]'",
+        "expect": {
+          "equals": "zg-hybrid file@5 11/12 file@10 11/12 strict@5 11/12\nzg-fts file@5 12/12 file@10 12/12 strict@5 10/12\nrg file@5 6/12 file@10 6/12 strict@5 6/12"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-by-tier",
+      "claim": "By tier (file@5 / strict@5 out of 4): named-direct 4/4 for all three tools; vocab-gap zg-hybrid 3/3, zg-fts 4/3, ripgrep 0/0; conceptual zg-hybrid 4/4, zg-fts 4/3, ripgrep 2/2.",
+      "value": "named 4/4/4, vocab-gap 3/4/0, conceptual 4/4/2 (file@5)",
+      "metric": "per-tier hit counts in results.json",
+      "method": "the command prints the tier rows in the same order as the README's tier table.",
+      "repro": "python3 -m json.tool retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;S=json.load(open(\"retrieval/intent-search/results.json\"))[\"summary\"][\"by_tier\"];[print(tier,t,\"file@5\",str(S[tier][t][\"file_hit@5\"])+\"/\"+str(S[tier][t][\"n\"]),\"strict@5\",str(S[tier][t][\"strict_hit@5\"])+\"/\"+str(S[tier][t][\"n\"])) for tier in S for t in S[tier]]'",
+        "expect": {
+          "equals": "named-direct zg-hybrid file@5 4/4 strict@5 4/4\nnamed-direct zg-fts file@5 4/4 strict@5 4/4\nnamed-direct rg file@5 4/4 strict@5 4/4\nvocab-gap zg-hybrid file@5 3/4 strict@5 3/4\nvocab-gap zg-fts file@5 4/4 strict@5 3/4\nvocab-gap rg file@5 0/4 strict@5 0/4\nconceptual zg-hybrid file@5 4/4 strict@5 4/4\nconceptual zg-fts file@5 4/4 strict@5 3/4\nconceptual rg file@5 2/4 strict@5 2/4"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-token-total-and-median",
+      "claim": "zg's output costs 2.3x more tokens than ripgrep's overall: 4378 (median 362.5) for zg-hybrid, 4160 (median 340.0) for zg-fts and 1890 (median 45.5) for ripgrep, over all 12 queries - the README rounds the medians to ~360 and ~46 tokens.",
+      "value": "4378 / 4160 / 1890 tokens; ratio 2.3x",
+      "metric": "total_tokens and median_tokens in results.json",
+      "method": "the command prints both token columns and divides the hybrid total by rg's.",
+      "repro": "python3 -m json.tool retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;S=json.load(open(\"retrieval/intent-search/results.json\"))[\"summary\"][\"overall\"];[print(t,\"total\",S[t][\"total_tokens\"],\"median\",S[t][\"median_tokens\"]) for t in S];print(\"zg-hybrid/rg total ratio\",format(S[\"zg-hybrid\"][\"total_tokens\"]/S[\"rg\"][\"total_tokens\"],\".1f\"))'",
+        "expect": {
+          "equals": "zg-hybrid total 4378 median 362.5\nzg-fts total 4160 median 340.0\nrg total 1890 median 45.5\nzg-hybrid/rg total ratio 2.3"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-latency",
+      "claim": "Median latency is 1.748 s for zg-hybrid and 1.467 s for zg-fts against 0.005 s for ripgrep - the README rounds these to ~1.6 s and 5 ms, so zg is ~350x slower per query, and the hybrid mode's vector step accounts for the 0.281 s/query gap the README quotes as +0.3 s.",
+      "value": "1.748 / 1.467 / 0.005 s; ~350x; embedding +0.281 s/query",
+      "metric": "median_latency_s in results.json",
+      "method": "the command prints the medians, their mean (the README's ~1.6 s for zg as a whole) and the hybrid/rg factor.",
+      "repro": "python3 -m json.tool retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;S=json.load(open(\"retrieval/intent-search/results.json\"))[\"summary\"][\"overall\"];[print(t,\"median\",S[t][\"median_latency_s\"],\"s\") for t in S];print(\"zg mean of the two median latencies\",format((S[\"zg-hybrid\"][\"median_latency_s\"]+S[\"zg-fts\"][\"median_latency_s\"])/2,\".2f\"),\"s\");print(\"hybrid/rg factor\",format(S[\"zg-hybrid\"][\"median_latency_s\"]/S[\"rg\"][\"median_latency_s\"],\".0f\"));print(\"embedding overhead (hybrid - fts)\",format(S[\"zg-hybrid\"][\"median_latency_s\"]-S[\"zg-fts\"][\"median_latency_s\"],\".2f\"),\"s\")'",
+        "expect": {
+          "equals": "zg-hybrid median 1.748 s\nzg-fts median 1.467 s\nrg median 0.005 s\nzg mean of the two median latencies 1.61 s\nhybrid/rg factor 350\nembedding overhead (hybrid - fts) 0.28 s"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-index-cost",
+      "claim": "The zg index cost 7.0 s to build cold and 5.8 MB on disk.",
+      "value": "7.0 s cold build, 5.8 MB",
+      "metric": "zg_index in results.json",
+      "method": "the command prints the committed build time and converts the committed byte count to MB.",
+      "repro": "python3 -m json.tool retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;d=json.load(open(\"retrieval/intent-search/results.json\"))[\"zg_index\"];print(\"cold build\",d[\"build_time_s\"],\"s\");print(\"on disk\",format(d[\"disk_bytes\"]/1e6,\".1f\"),\"MB\")'",
+        "expect": {
+          "equals": "cold build 7.0 s\non disk 5.8 MB"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-query-suite",
+      "claim": "The suite is 12 English intent queries in three tiers of 4, each with a pre-committed rg keyword.",
+      "value": "12 queries, 3 tiers x 4, 12 pre-committed keywords",
+      "metric": "queries.json and the by-tier summary",
+      "method": "the command counts the committed queries, their tier sizes and how many carry an rg_keyword.",
+      "repro": "python3 -m json.tool retrieval/intent-search/queries.json | head -40",
+      "evidence": "retrieval/intent-search/queries.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,collections as C;Q=json.load(open(\"retrieval/intent-search/queries.json\"))[\"queries\"];c=C.Counter(q[\"tier\"] for q in Q);print(\"queries\",len(Q));print(\"tiers\",\" \".join(k+\"=\"+str(c[k]) for k in sorted(c)));print(\"with rg_keyword\",sum(1 for q in Q if q.get(\"rg_keyword\")))'",
+        "expect": {
+          "equals": "queries 12\ntiers conceptual=4 named-direct=4 vocab-gap=4\nwith rg_keyword 12"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-corpus-pin",
+      "claim": "The measured corpus is psf/requests v2.32.3 at commit 0e322af87745eff34caffe4df68456ebc20d9068, indexed over src/requests/*.py.",
+      "value": "requests v2.32.3 @ 0e322af8",
+      "metric": "corpus block of results.json",
+      "method": "the command prints the committed repo, tag, commit and index scope.",
+      "repro": "grep -n 'EXPECTED_SHA\\|commit' retrieval/intent-search/fetch_corpus.sh retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;d=json.load(open(\"retrieval/intent-search/results.json\"))[\"corpus\"];print(d[\"repo\"],d[\"tag\"],d[\"commit\"]);print(\"scope\",d[\"scope\"])'",
+        "expect": {
+          "equals": "psf/requests v2.32.3 0e322af87745eff34caffe4df68456ebc20d9068\nscope src/requests/*.py"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-per-query-table",
+      "claim": "The per-query table: file@5/strict@5 and tokens for the three tools on all 12 queries, from redirects (1/1,361 | 1/1,331 | 1/1,332) through to pagination-links (1/1,325 | 1/1,325 | 0/0,0).",
+      "value": "12 rows x 3 tools of hits and tokens",
+      "metric": "per_query in results.json",
+      "method": "the command prints each query's tier, its pre-committed rg keyword, and each tool's file@5/strict@5 and token count.",
+      "repro": "python3 -m json.tool retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;P=json.load(open(\"retrieval/intent-search/results.json\"))[\"per_query\"];H=lambda q,t:str(int(q[\"tools\"][t][\"file_hit@5\"]))+\"/\"+str(int(q[\"tools\"][t][\"strict_hit@5\"]));[print(q[\"id\"],q[\"tier\"],q[\"rg_keyword\"],\" \".join(t+\"=\"+H(q,t)+\",\"+str(q[\"tools\"][t][\"tokens\"]) for t in [\"zg-hybrid\",\"zg-fts\",\"rg\"])) for q in P]'",
+        "expect": {
+          "equals": "redirects named-direct redirect zg-hybrid=1/1,361 zg-fts=1/1,331 rg=1/1,332\ndigest-auth named-direct digest zg-hybrid=1/1,339 zg-fts=1/1,335 rg=1/1,115\ntimeout named-direct timeout zg-hybrid=1/1,362 zg-fts=1/1,344 rg=1/1,655\nno-proxy named-direct no_proxy zg-hybrid=1/1,360 zg-fts=1/1,336 rg=1/1,445\nconnection-pooling vocab-gap pooling zg-hybrid=1/1,382 zg-fts=1/1,353 rg=0/0,22\nurl-credentials vocab-gap credentials zg-hybrid=0/0,393 zg-fts=1/0,372 rg=0/0,22\nbody-rewind vocab-gap resend zg-hybrid=1/1,366 zg-fts=1/1,327 rg=0/0,17\nauth-leak vocab-gap leak zg-hybrid=1/1,381 zg-fts=1/1,363 rg=0/0,21\ntext-encoding conceptual charset zg-hybrid=1/1,363 zg-fts=1/1,335 rg=1/1,192\ncontent-length conceptual size zg-hybrid=1/1,387 zg-fts=1/0,354 rg=1/1,69\nresponse-truthiness conceptual truthy zg-hybrid=1/1,359 zg-fts=1/1,385 rg=0/0,0\npagination-links conceptual pagination zg-hybrid=1/1,325 zg-fts=1/1,325 rg=0/0,0"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-strict-vs-file-split",
+      "claim": "Only two cells split between file-level and strict (function-level) hits, both in zg-fts: url-credentials and content-length.",
+      "value": "2 split cells",
+      "metric": "file_hit@5 vs strict_hit@5 in the per-query rows",
+      "method": "the command lists every (query, tool) cell where the file-level and strict hits differ.",
+      "repro": "python3 -m json.tool retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;P=json.load(open(\"retrieval/intent-search/results.json\"))[\"per_query\"];sp=[(q[\"id\"],t) for q in P for t in q[\"tools\"] if q[\"tools\"][t][\"file_hit@5\"]!=q[\"tools\"][t][\"strict_hit@5\"]];print(\"split cells\",len(sp));[print(\" \",i,t) for i,t in sp]'",
+        "expect": {
+          "equals": "split cells 2\n  url-credentials zg-fts\n  content-length zg-fts"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "intent-search-corpus-dimensions",
+      "claim": "The indexed source is ~184 KiB - 18 files, 5,642 lines - giving a ~31x storage overhead for the 5.8 MB index.",
+      "value": "18 files / 5,642 lines / ~184 KiB / ~31x",
+      "metric": "size of the fetched requests checkout under corpus/",
+      "method": "measured with wc/du over the fetched corpus; corpus/ is gitignored and fetch_corpus.sh re-clones it over the network.",
+      "repro": "cd retrieval/intent-search && ./fetch_corpus.sh && wc -l corpus/src/requests/*.py && du -sb corpus/src/requests",
+      "evidence": "retrieval/intent-search/fetch_corpus.sh",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "corpus/ is gitignored and absent from a clean checkout - fetch_corpus.sh re-clones psf/requests over the network - so neither the file/line counts, the 184 KiB source size nor the 31x overhead against the index can be recomputed offline. The index-side half of the claim (7.0 s cold build, 5.8 MB on disk) is machine-checked."
+      }
+    },
+    {
+      "id": "browser-task-scripts",
+      "claim": "The suite ships 5 ego task scripts against 4 for browser-use: task 05 (parallel Spaces) is ego-only, because browser-use local mode has no local parallel mode.",
+      "value": "browser-use 01-04, ego 01-05",
+      "metric": "script ids under tasks/<tool>/",
+      "method": "the command lists the two-digit prefixes of both task directories.",
+      "repro": "ls browser/ego-lite-vs-browser-use/tasks/browser-use browser/ego-lite-vs-browser-use/tasks/ego",
+      "evidence": "browser/ego-lite-vs-browser-use/tasks/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;B=pathlib.Path(\"browser/ego-lite-vs-browser-use/tasks\");b=sorted(p.name[:2] for p in (B/\"browser-use\").glob(\"*.sh\"));e=sorted(p.name[:2] for p in (B/\"ego\").glob(\"*.sh\"));print(\"browser-use\",len(b),\" \".join(b));print(\"ego\",len(e),\" \".join(e))'",
+        "expect": {
+          "equals": "browser-use 4 01 02 03 04\nego 5 01 02 03 04 05"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "browser-charts-match-captions",
+      "claim": "The committed charts express the same figures the README's chart captions quote: 6.4 / 9.7 (HN), 9.1 / 1.3 (TodoMVC), 2.4 total (parallel) in assets/timings.svg.",
+      "value": "5 timing figures present in both the chart and the README caption",
+      "metric": "text of assets/timings.svg against the README's img alt text",
+      "method": "the command reads the numbers out of the timings chart's own text nodes and out of the line of the README that embeds it.",
+      "repro": "grep -o '6.4\\|9.7\\|9.1\\|1.3\\|2.4' browser/ego-lite-vs-browser-use/assets/timings.svg | sort -u",
+      "evidence": "browser/ego-lite-vs-browser-use/assets/timings.svg",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;R=pathlib.Path(\"browser/ego-lite-vs-browser-use/README.md\").read_text();T=pathlib.Path(\"browser/ego-lite-vs-browser-use/assets/timings.svg\").read_text();a=[l for l in R.splitlines() if \"assets/timings.svg\" in l][0];v=[\"6.4\",\"9.7\",\"9.1\",\"1.3\",\"2.4\"];print(\"chart\",\" \".join(x for x in v if x in T));print(\"readme caption\",\" \".join(x for x in v if x in a))'",
+        "expect": {
+          "equals": "chart 6.4 9.7 9.1 1.3 2.4\nreadme caption 6.4 9.7 9.1 1.3 2.4"
+        },
+        "timeout": 60,
+        "note": "this checks that the caption and the chart agree; it cannot re-measure the timings, which is why that claim is manual."
+      }
+    },
+    {
+      "id": "browser-scorecard-capabilities",
+      "claim": "The scorecard compares 10 capabilities: browser-use passes 7 out of the box, 2 with friction and 1 not at all; ego lite passes 7 and lacks 3.",
+      "value": "10 capabilities, marks: 14 check / 2 friction / 4 cross",
+      "metric": "mark glyphs in assets/scorecard.svg",
+      "method": "the command counts the capability marks in the committed chart's text nodes.",
+      "repro": "grep -c '✓' browser/ego-lite-vs-browser-use/assets/scorecard.svg; grep -o 'Capability scorecard' browser/ego-lite-vs-browser-use/assets/scorecard.svg | head -1",
+      "evidence": "browser/ego-lite-vs-browser-use/assets/scorecard.svg",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import re,pathlib,collections as C;S=pathlib.Path(\"browser/ego-lite-vs-browser-use/assets/scorecard.svg\").read_text();t=[x.strip() for x in re.findall(r\">([^<>]+)<\",S) if x.strip()];c=C.Counter(x for x in t if x in (\"✓\",\"!\",\"✕\"));print(\"capabilities\",(c[\"✓\"]+c[\"!\"]+c[\"✕\"])//2);print(\"marks\",{k:c[k] for k in (\"✓\",\"!\",\"✕\")})'",
+        "expect": {
+          "equals": "capabilities 10\nmarks {'✓': 14, '!': 2, '✕': 4}"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "browser-iframe-fixtures",
+      "claim": "The iframe fixtures ship in fixtures/ and are served locally on ports 8973 (outer, same-origin chain) and 8974 (cross-origin nested inner), with the secret string the tasks extract.",
+      "value": "5 fixture files, 2 ports, 1 secret",
+      "metric": "files under fixtures/ and the task scripts that serve them",
+      "method": "the command lists the fixtures, checks both ports appear in the task scripts, and reads the secret out of inner.html.",
+      "repro": "cat browser/ego-lite-vs-browser-use/fixtures/*.html",
+      "evidence": "browser/ego-lite-vs-browser-use/fixtures/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;B=pathlib.Path(\"browser/ego-lite-vs-browser-use\");F=sorted(p.name for p in (B/\"fixtures\").glob(\"*.html\"));T=\"\".join(p.read_text() for p in (B/\"tasks\").rglob(\"*.sh\"));print(\"fixtures\",len(F),\" \".join(F));print(\"ports 8973/8974 in task scripts\",(\"8973\" in T) and (\"8974\" in T));print(\"secret in inner.html\",\"SECRET-XK42-DEEP\" in (B/\"fixtures/inner.html\").read_text())'",
+        "expect": {
+          "equals": "fixtures 5 inner.html mid-x.html mid.html outer-x.html outer.html\nports 8973/8974 in task scripts True\nsecret in inner.html True"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "browser-per-task-timings",
+      "claim": "Per-task wall-clock: HN top 5 - browser-use 6.4 s / 2 invocations, ego lite 9.7 s / 1 invocation; TodoMVC - browser-use 9.1 s, ego lite 1.3 s.",
+      "value": "6.4 / 9.7 / 9.1 / 1.3 s",
+      "metric": "single `time` measurements per task on the bench machine",
+      "method": "each number is one scripted run of tasks/<tool>/<task>.sh, timed with `time` on a macOS machine with the real Chrome attached; no capture of those runs was committed.",
+      "repro": "cd browser/ego-lite-vs-browser-use && bash tasks/browser-use/01-hn.sh && bash tasks/ego/01-hn.sh",
+      "evidence": "browser/ego-lite-vs-browser-use/tasks/",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the per-task CLI output and `time` logs were not committed, so the timings exist only in prose and in the shipped charts. Re-measuring needs macOS, a real Chrome profile, ego lite (GUI onboarding) and browser-use installed, plus the network - nothing a CI gate can do. The chart's own figures are checked against the README caption instead."
+      }
+    },
+    {
+      "id": "browser-parallel-space-times",
+      "claim": "Parallel task 05: ego lite runs two Spaces concurrently, finishing in 1.5 s and 2.4 s total, with the user's windows untouched; browser-use cannot attempt it locally.",
+      "value": "1.5 s / 2.4 s",
+      "metric": "single timed run of tasks/ego/05-parallel.sh",
+      "method": "one scripted run of the two-Space script on the bench machine; the per-Space time and the total were read off that run's console output, which was not committed.",
+      "repro": "cd browser/ego-lite-vs-browser-use && bash tasks/ego/05-parallel.sh",
+      "evidence": "browser/ego-lite-vs-browser-use/tasks/ego/05-parallel.sh",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "single-run measurement of a scripted run whose console output was not committed; reproducing it needs ego lite on macOS (app install plus GUI onboarding) and the network for example.com / httpbin.org. The chart only plots the 2.4 s total."
+      }
+    },
+    {
+      "id": "browser-localstorage-duplication",
+      "claim": "ego lite's first TodoMVC pass showed 6 duplicated todos because its Chrome data migration copied over the localStorage left by the browser-use run.",
+      "value": "6 todos (3 + 3 duplicated) in the first ego pass",
+      "metric": "console output of the first ego lite TodoMVC run",
+      "method": "observed once during the suite; the run's output was not committed, and the suite's ego script now calls localStorage.clear() before its own run.",
+      "repro": "cd browser/ego-lite-vs-browser-use && bash tasks/ego/02-todomvc.sh   # the shipped script clears localStorage first",
+      "evidence": "browser/ego-lite-vs-browser-use/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the first-pass console output was never committed, and the shipped script now clears localStorage, so the 6-todo observation cannot be recomputed from the repo. Re-observing it needs the migrated Chrome profile on the macOS bench machine."
+      }
+    },
+    {
+      "id": "browser-environment",
+      "claim": "Environment: Apple M5 Max, macOS 26.5 (Darwin 25.5.0), browser-use 0.13.7 (Browser Harness 0.1.8), ego-browser 0.4.5.5 / Chromium 150.0.7871.101 / Node v24.18.0.",
+      "value": "machine + 5 tool version strings",
+      "metric": "versions the two tools reported on the bench machine",
+      "method": "read off the two tools' own version output during the run; neither tool is vendored or version-pinned anywhere in the repo.",
+      "repro": "browser-use --version; ego-browser --version   # on the macOS bench machine",
+      "evidence": "browser/ego-lite-vs-browser-use/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the versions come from the tools installed on the macOS bench machine (ego lite is a downloaded macOS app, browser-use a uv tool); nothing in the repo records or pins them, and a clean checkout has neither installed - one needs macOS plus the network."
+      }
+    },
+    {
+      "id": "search-query-suite",
+      "claim": "The search-API suite ships 8 committed queries, each with its acceptable-URL ground truth.",
+      "value": "8 queries, 8 with expect_url_contains",
+      "metric": "entries in queries.json",
+      "method": "the command counts the committed queries and how many carry ground truth.",
+      "repro": "python3 -m json.tool search/search-apis/queries.json",
+      "evidence": "search/search-apis/queries.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;Q=json.load(open(\"search/search-apis/queries.json\"));print(\"queries\",len(Q));print(\"with ground truth\",sum(1 for q in Q if q.get(\"expect_url_contains\")))'",
+        "expect": {
+          "equals": "queries 8\nwith ground truth 8"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "search-provider-adapters",
+      "claim": "The harness carries 6 provider adapters - exa, tavily, serper, brave, firecrawl, jina - each skipped when its API key is unset.",
+      "value": "6 adapters",
+      "metric": "PROVIDERS table in run.py",
+      "method": "the command parses the PROVIDERS list out of the committed harness.",
+      "repro": "grep -A8 '^PROVIDERS' search/search-apis/run.py",
+      "evidence": "search/search-apis/run.py",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import re,pathlib;t=pathlib.Path(\"search/search-apis/run.py\").read_text();p=re.search(r\"PROVIDERS = \\[(.*?)\\]\",t,re.S).group(1);print(\"adapters\",len(re.findall(r\"\\(\\\"\",p)));print(\"names\",\" \".join(re.findall(r\"\\(\\\"([a-z]+)\\\"\",p)))'",
+        "expect": {
+          "equals": "adapters 6\nnames exa tavily serper brave firecrawl jina"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "search-no-captured-run",
+      "claim": "No run has been captured: the suite has no results.json and publishes no numbers, as the README and the root table both say.",
+      "value": "0 results.json, 0 published numbers",
+      "metric": "existence of search/search-apis/results.json and the two README statements",
+      "method": "the command checks that the suite has no results artifact and that both READMEs still say so.",
+      "repro": "verify-claims --root . run --only search-no-captured-run",
+      "evidence": "search/search-apis/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;S=pathlib.Path(\"search/search-apis\");print(\"results.json exists\",(S/\"results.json\").exists());print(\"suite readme\",\"no captured run yet\" in (S/\"README.md\").read_text());print(\"root readme\",\"publishes no numbers\" in pathlib.Path(\"README.md\").read_text())'",
+        "expect": {
+          "equals": "results.json exists False\nsuite readme True\nroot readme True"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "search-endpoint-probe",
+      "claim": "The six provider endpoint paths were re-checked unauthenticated on 2026-09-13: exa answers 402, tavily 401, serper 403 and firecrawl's v2 /search 200 - auth or quota errors rather than 404, so the paths are live; api.search.brave.com and s.jina.ai were unreachable from the host that ran the probe.",
+      "value": "402 / 401 / 403 / 200 (live), 2 unreachable",
+      "metric": "HTTP status of an unauthenticated POST/GET to each provider endpoint",
+      "method": "unauthenticated probe with curl from the machine that prepared the suite; the response shapes were last compared against provider docs by hand in 2026-08.",
+      "repro": "curl -s -o /dev/null -w '%{http_code}' -X POST https://api.exa.ai/search -H 'Content-Type: application/json' -d '{\"query\":\"test\"}'",
+      "evidence": "search/search-apis/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the probe needs the network: four provider endpoints answer only if reachable, and api.search.brave.com and s.jina.ai did not answer from this host at all. The gate runs offline, so this claim carries the command and the date it was last run instead of a receipt."
+      }
+    },
+    {
+      "id": "root-table-dates",
+      "claim": "The root benchmark table's Date column matches each suite's own stated run date (browser 2026-07-28, editing / documents / code-search 2026-08-19, intent-search 2026-09-07) and the search suite is marked pending.",
+      "value": "5 dates agree, search pending",
+      "metric": "root README table against the suites' `run on <date>` lines",
+      "method": "the command matches the five suite READMEs against the dates quoted in the root table.",
+      "repro": "grep -n 'run on 20' browser/ego-lite-vs-browser-use/README.md editing/edit-apply-formats/README.md documents/pdf-to-markdown/README.md retrieval/code-search/README.md retrieval/intent-search/README.md",
+      "evidence": "README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import re,pathlib;m={\"browser/ego-lite-vs-browser-use\":\"2026-07-28\",\"editing/edit-apply-formats\":\"2026-08-19\",\"documents/pdf-to-markdown\":\"2026-08-19\",\"retrieval/code-search\":\"2026-08-19\",\"retrieval/intent-search\":\"2026-09-07\"};root=pathlib.Path(\"README.md\").read_text();agree=sum(1 for p,d in m.items() if re.search(\"run on \"+d,(pathlib.Path(p)/\"README.md\").read_text()));inroot=sum(1 for d in m.values() if \"| \"+d+\" |\" in root);print(\"suites\",len(m));print(\"suite READMEs stating their table date\",agree);print(\"dates present in the root table\",inroot);print(\"search row pending\",\"| pending |\" in root)'",
+        "expect": {
+          "equals": "suites 5\nsuite READMEs stating their table date 5\ndates present in the root table 5\nsearch row pending True"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "root-table-verdicts",
+      "claim": "The figures inside the root table's verdicts agree with the suites' committed results: three appliers append a trailing newline and the most corruptions are 4; pymupdf4llm 9/10 headings; ripgrep 0.95 recall and ctags 0.00; zg 11-12/12 against ripgrep's 6/12, vocab-gap 3-4/4 against 0/4, ~360 tokens and ~1.6 s against ~46 tokens at 5 ms.",
+      "value": "11 quoted figures, all reproduced",
+      "metric": "the root README's Verdict cells against the suites' results.json",
+      "method": "for each figure the verdict quotes, the command recomputes it from the suite's committed results and checks the quoted text is still in the root README; it prints the recomputed value and whether the row still carries it.",
+      "repro": "sed -n '/^## Benchmarks/,/^## Principles/p' README.md",
+      "evidence": "README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,re,pathlib;root=pathlib.Path(\"README.md\").read_text();E=json.load(open(\"editing/edit-apply-formats/results.json\"));A=list(next(iter(E.values())));corr=max(sum(1 for r in E.values() if r[a][\"status\"]==\"CORRUPT\") for a in A);eof=sum(1 for a in A if E[\"10-eof-newline\"][a][\"status\"]==\"CORRUPT\");D=json.load(open(\"documents/pdf-to-markdown/results.json\"))[\"tools\"];Ef={p.stem:json.load(open(p)) for p in pathlib.Path(\"documents/pdf-to-markdown/fixtures/expected\").glob(\"*.json\")};heads=sum(len(e[\"headings\"]) for e in Ef.values());hm=int(round(sum(D[\"pymupdf4llm\"][\"fixtures\"][n][\"heading_recall\"]*len(Ef[n][\"headings\"]) for n in Ef)));C=json.load(open(\"retrieval/code-search/results.json\"))[\"results\"];I=json.load(open(\"retrieval/intent-search/results.json\"))[\"summary\"];Z=[I[\"overall\"][\"zg-hybrid\"],I[\"overall\"][\"zg-fts\"],I[\"overall\"][\"rg\"]];pairs=[(\"tie for most corruptions (4)\",\"4\"),(\"three appliers silently append a trailing newline\",str(eof)),(\"9/10 headings\",str(hm)+\"/\"+str(heads)),(\"highest recall (0.95)\",format(C[\"ripgrep\"][\"micro_avg\"][\"recall\"],\".2f\")),(\"(0.00 recall)\",format(C[\"ctags\"][\"micro_avg\"][\"recall\"],\".2f\")),(\"11-12/12 vs ripgrep\",str(Z[0][\"file_hit@5\"])+\"-\"+str(Z[1][\"file_hit@5\"])+\"/12 vs \"+str(Z[2][\"file_hit@5\"])+\"/12\"),(\"3-4/4, rg 0/4\",str(I[\"by_tier\"][\"vocab-gap\"][\"zg-hybrid\"][\"file_hit@5\"])+\"-\"+str(I[\"by_tier\"][\"vocab-gap\"][\"zg-fts\"][\"file_hit@5\"])+\"/4, rg \"+str(I[\"by_tier\"][\"vocab-gap\"][\"rg\"][\"file_hit@5\"])+\"/4\"),(\"~360 tokens\",str(Z[0][\"median_tokens\"])),(\"~46 tokens\",str(Z[2][\"median_tokens\"])),(\"5 ms\",str(Z[2][\"median_latency_s\"])+\" s\"),(\"~1.6 s\",format((Z[0][\"median_latency_s\"]+Z[1][\"median_latency_s\"])/2,\".2f\")+\" s\")];frag={\"tie for most corruptions (4)\":\"tie for most corruptions (4)\",\"three appliers silently append a trailing newline\":\"three appliers silently append a trailing newline\",\"9/10 headings\":\"9/10 headings\",\"highest recall (0.95)\":\"highest recall (0.95)\",\"(0.00 recall)\":\"(0.00 recall)\",\"11-12/12 vs ripgrep\":\"11\\u201312/12 vs ripgrep\\u0027s 6/12\",\"3-4/4, rg 0/4\":\"zg 3\\u20134/4, rg 0/4\",\"~360 tokens\":\"~360 tokens and ~1.6 s per query vs rg\\u0027s ~46 tokens at 5 ms\",\"~46 tokens\":\"~360 tokens and ~1.6 s per query vs rg\\u0027s ~46 tokens at 5 ms\",\"5 ms\":\"~360 tokens and ~1.6 s per query vs rg\\u0027s ~46 tokens at 5 ms\",\"~1.6 s\":\"~360 tokens and ~1.6 s per query vs rg\\u0027s ~46 tokens at 5 ms\"};[print(f,\"recomputed\",v,\"quoted in README\",frag[f] in root) for f,v in pairs]'",
+        "expect": {
+          "equals": "tie for most corruptions (4) recomputed 4 quoted in README True\nthree appliers silently append a trailing newline recomputed 3 quoted in README True\n9/10 headings recomputed 9/10 quoted in README True\nhighest recall (0.95) recomputed 0.95 quoted in README True\n(0.00 recall) recomputed 0.00 quoted in README True\n11-12/12 vs ripgrep recomputed 11-12/12 vs 6/12 quoted in README True\n3-4/4, rg 0/4 recomputed 3-4/4, rg 0/4 quoted in README True\n~360 tokens recomputed 362.5 quoted in README True\n~46 tokens recomputed 45.5 quoted in README True\n5 ms recomputed 0.005 s quoted in README True\n~1.6 s recomputed 1.61 s quoted in README True"
+        },
+        "timeout": 60,
+        "note": "the token and latency rows quote one combined sentence, so the last three rows carry the same README fragment; the recomputed values are the suite-side halves of it."
+      }
+    },
+    {
+      "id": "committed-results-inventory",
+      "claim": "Every machine-readable capture is a committed results.json produced by a committed run.py: four suites have both, the search suite has only the harness, and the browser suite has neither (its charts are the only capture).",
+      "value": "4 results.json, 5 run.py",
+      "metric": "results.json and run.py files in the repo",
+      "method": "the command lists the directories holding each artifact.",
+      "repro": "find . -name results.json -o -name run.py | grep -v '^./.git'",
+      "evidence": "README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;print(\"results.json in\",\" \".join(sorted(str(p.parent) for p in pathlib.Path(\".\").rglob(\"results.json\"))));print(\"run.py in\",\" \".join(sorted(str(p.parent) for p in pathlib.Path(\".\").rglob(\"run.py\"))))'",
+        "expect": {
+          "equals": "results.json in documents/pdf-to-markdown editing/edit-apply-formats retrieval/code-search retrieval/intent-search\nrun.py in documents/pdf-to-markdown editing/edit-apply-formats retrieval/code-search retrieval/intent-search search/search-apis"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "editing-fixture-perturbations",
+      "claim": "The task-design perturbations hold in the committed fixtures: scenario 02 prepends 8 lines to the stale view, scenario 04's target block occurs twice in the file (the intended edit is the second occurrence), scenario 06 carries 4 independent changes across 3 hunks, and scenario 12's hand-written payload has 2 hunks whose line ranges overlap.",
+      "value": "8 prepended lines; 2 occurrences; 4 changed runs in 3 hunks; 2 overlapping hunks",
+      "metric": "fixture files vs their stale views, and the committed payloads",
+      "method": "the command differences the file/stale line counts, counts the str_replace payload's old_str in the on-disk file, counts maximal +/- runs and @@ headers in the scenario-06 udiff, and checks that scenario 12's two old-line ranges overlap.",
+      "repro": "diff -u editing/edit-apply-formats/fixtures/02-line-shift/stale.py editing/edit-apply-formats/fixtures/02-line-shift/file.py | head",
+      "evidence": "editing/edit-apply-formats/fixtures/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib,json,re;F=pathlib.Path(\"editing/edit-apply-formats/fixtures\");L=lambda p:len(p.read_text().splitlines());print(\"02-line-shift lines prepended\",L(F/\"02-line-shift/file.py\")-L(F/\"02-line-shift/stale.py\"));f=(F/\"04-ambiguous/file.py\").read_text();b=json.load(open(F/\"04-ambiguous/payload.strreplace.json\"))[0][\"old_str\"];print(\"04-ambiguous target occurrences in file.py\",f.count(b));u=[l for l in (F/\"06-multi-hunk/payload.udiff\").read_text().splitlines() if not l.startswith((\"+++\",\"---\"))];print(\"06-multi-hunk hunks\",sum(1 for l in u if l.startswith(\"@@\")),\"changed runs\",sum(1 for i,l in enumerate(u) if l[:1] in \"+-\" and (i==0 or u[i-1][:1] not in \"+-\")));v=(F/\"12-overlapping-hunks/payload.udiff\").read_text();h=[(int(a),int(b)) for a,b in re.findall(r\"@@ -(\\d+),(\\d+)\",v)];print(\"12-overlapping-hunks hunks\",len(h),\"old ranges\",h,\"overlap\",h[1][0]<=h[0][0]+h[0][1]-1)'",
+        "expect": {
+          "equals": "02-line-shift lines prepended 8\n04-ambiguous target occurrences in file.py 2\n06-multi-hunk hunks 3 changed runs 4\n12-overlapping-hunks hunks 2 old ranges [(15, 8), (19, 9)] overlap True"
+        },
+        "timeout": 60,
+        "note": "'4 independent changes' is the count of changed runs (VERSION, the new power(), the divide guard, the ops entry), not of hunks."
+      }
+    },
+    {
+      "id": "editing-vendored-pins",
+      "claim": "The two vendored appliers are pinned as the Environment table says: OpenAI's apply_patch.py from openai/openai-cookbook @ commit 2a798f0c (MIT) and Cline's diff.ts from cline/cline @ tag v3.39.2 / commit 37152329 (Apache-2.0).",
+      "value": "2a798f0c, v3.39.2 / 37152329",
+      "metric": "provenance headers of vendor/apply_patch.py and vendor/cline_diff.ts",
+      "method": "the command checks the commits and tag appear in the vendored headers and in the suite README.",
+      "repro": "head -6 editing/edit-apply-formats/vendor/apply_patch.py editing/edit-apply-formats/vendor/cline_diff.ts",
+      "evidence": "editing/edit-apply-formats/vendor/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;V=pathlib.Path(\"editing/edit-apply-formats/vendor\");a=(V/\"apply_patch.py\").read_text();c=(V/\"cline_diff.ts\").read_text();r=pathlib.Path(\"editing/edit-apply-formats/README.md\").read_text();print(\"openai-cookbook 2a798f0c in vendor header\",(\"2a798f0c\" in a));print(\"cline v3.39.2 / 37152329 in vendor header\",(\"v3.39.2\" in c) and (\"37152329\" in c));print(\"both quoted in the README\",(\"2a798f0c\" in r) and (\"37152329\" in r))'",
+        "expect": {
+          "equals": "openai-cookbook 2a798f0c in vendor header True\ncline v3.39.2 / 37152329 in vendor header True\nboth quoted in the README True"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "documents-reading-order-from-outputs",
+      "claim": "The reading-order scores reproduce from the raw committed outputs, not just from results.json: 16/22 for pdftotext (10 of the 16 cross-column pairs - the rest of its 16 are within-column), 22/22 for pymupdf4llm and docling, 12/22 for markitdown (9 of 16 cross-column).",
+      "value": "16/22 (10/16 cross), 22/22 (16/16), 12/22 (9/16), 22/22 (16/16)",
+      "metric": "first-occurrence order of the 22 committed expected pairs in outputs/*/03-two-column.md",
+      "method": "the command applies the suite's own pair rule (decoration stripped, whitespace collapsed, first occurrence of A before B) to the raw output files, taking the 6 within-column pairs as the first six entries of the committed pair list.",
+      "repro": "grep -n 'Alpine\\|Model ensembles' documents/pdf-to-markdown/outputs/pdftotext/03-two-column.md",
+      "evidence": "documents/pdf-to-markdown/outputs/",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json,pathlib,re;C=lambda s:re.sub(r\"\\s+\",\" \",s).strip();D=lambda s:C(re.sub(r\"[*_`>#|\\\\]\",\" \",s));E=json.load(open(\"documents/pdf-to-markdown/fixtures/expected/03-two-column.json\"));P=E[\"order_pairs\"];O=pathlib.Path(\"documents/pdf-to-markdown/outputs\");F=lambda h,ps:sum(1 for a,b in ps if 0<=h.find(D(a))<h.find(D(b)));[print(t,F(h,P),\"/\",len(P),\"| cross-column\",F(h,P[6:]),\"/\",len(P[6:])) for t,h in [(t,D((O/t/\"03-two-column.md\").read_text())) for t in [\"pdftotext\",\"pymupdf4llm\",\"markitdown\",\"docling\"]]]'",
+        "expect": {
+          "equals": "pdftotext 16 / 22 | cross-column 10 / 16\npymupdf4llm 22 / 22 | cross-column 16 / 16\nmarkitdown 12 / 22 | cross-column 9 / 16\ndocling 22 / 22 | cross-column 16 / 16"
+        },
+        "timeout": 60,
+        "note": "this is the check that results.json's order_pairs_ok values are backed by the committed converter output."
+      }
+    },
+    {
+      "id": "intent-search-harness-config",
+      "claim": "The harness config the run used: direct mode, --limit 10, 3 repetitions, embedding local/potion-retrieval-32m, tokenizer cl100k_base.",
+      "value": "direct / 10 / 3 reps / local/potion-retrieval-32m / cl100k_base",
+      "metric": "config block of results.json",
+      "method": "the command prints the committed config keys in README order.",
+      "repro": "python3 -m json.tool retrieval/intent-search/results.json",
+      "evidence": "retrieval/intent-search/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import json;d=json.load(open(\"retrieval/intent-search/results.json\"))[\"config\"];[print(k,d[k]) for k in [\"zg_mode\",\"zg_limit\",\"reps\",\"embedding\",\"tokenizer\"]]'",
+        "expect": {
+          "equals": "zg_mode direct\nzg_limit 10\nreps 3\nembedding local/potion-retrieval-32m\ntokenizer cl100k_base"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-median-of-3-runs",
+      "claim": "Query times are the median of 3 runs, as the README says, and the harness computes that median.",
+      "value": "REPS = 3, statistics.median",
+      "metric": "constant and median call in run.py",
+      "method": "the command reads the repetition count out of the committed harness.",
+      "repro": "grep -n 'REPS\\|statistics.median' retrieval/code-search/run.py",
+      "evidence": "retrieval/code-search/run.py",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib,re;t=pathlib.Path(\"retrieval/code-search/run.py\").read_text();m=re.search(r\"^REPS = (\\d+)$\",t,re.M);print(\"REPS =\",m.group(1));print(\"median of the repetitions\",\"statistics.median\" in t)'",
+        "expect": {
+          "equals": "REPS = 3\nmedian of the repetitions True"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "code-search-fetched-binaries",
+      "claim": "The tools the suites fetch are pinned: fetch_tools.sh downloads ripgrep 14.1.1 (musl) and the uctags-2026.08.18 nightly into a gitignored bin/.",
+      "value": "ripgrep 14.1.1 musl + uctags-2026.08.18 nightly into gitignored bin/",
+      "metric": "URLs in fetch_tools.sh and the suite .gitignore",
+      "method": "the command reads both pinned URLs out of the fetch script and confirms bin/ is gitignored.",
+      "repro": "grep -n 'URL=\\|gitignore' -r retrieval/code-search/fetch_tools.sh retrieval/code-search/.gitignore",
+      "evidence": "retrieval/code-search/fetch_tools.sh",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;F=pathlib.Path(\"retrieval/code-search\");t=(F/\"fetch_tools.sh\").read_text();print(\"ripgrep 14.1.1 URL pinned\",\"ripgrep-14.1.1-x86_64-unknown-linux-musl\" in t);print(\"uctags 2026.08.18 URL pinned\",\"uctags-2026.08.18-linux-x86_64\" in t);print(\"bin/ gitignored\",\"bin/\" in (F/\".gitignore\").read_text())'",
+        "expect": {
+          "equals": "ripgrep 14.1.1 URL pinned True\nuctags 2026.08.18 URL pinned True\nbin/ gitignored True"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "search-summary-schema",
+      "claim": "The harness records the four documented metrics per query - latency, response tokens, response bytes and hit@5 - and prints the per-provider hit@5 / median-latency / median-token summary the README promises.",
+      "value": "5 row columns, summary line present",
+      "metric": "run.py's result row keys and its summary print",
+      "method": "the command checks the row keys and the summary line in the committed harness.",
+      "repro": "grep -n 'row.update\\|hit@5' search/search-apis/run.py",
+      "evidence": "search/search-apis/run.py",
+      "as_of": "2026-09-13",
+      "check": {
+        "cmd": "python3 -c 'import pathlib;t=pathlib.Path(\"search/search-apis/run.py\").read_text();cols=[\"latency_s\",\"bytes\",\"tokens\",\"urls\",\"hit\"];print(\"row columns recorded\",sum(1 for c in cols if c+\"=\" in t),\"of\",len(cols));print(\"summary prints hit@5\",\"hit@5\" in t)'",
+        "expect": {
+          "equals": "row columns recorded 5 of 5\nsummary prints hit@5 True"
+        },
+        "timeout": 60
+      }
+    },
+    {
+      "id": "editing-figures-not-in-results",
+      "claim": "Two published details of the editing results have no committed artifact: Cline's CRLF output carries 4 lone-LF lines in an otherwise-CRLF file, and cline-replace's timings include a bun subprocess launch of ~13 ms.",
+      "value": "4 lone-LF lines; ~13 ms bun launch",
+      "metric": "byte detail of Cline's CRLF output and the in-process/applier timing split",
+      "method": "the CRLF line endings were read off the applier's output at run time and the bun overhead from comparing runs; results.json stores only status/seconds/error per cell (no output bytes, no in-process timing).",
+      "repro": "cd editing/edit-apply-formats && ../../.venv/bin/python run.py   # then inspect Cline's 08-crlf output bytes and the cline-replace timings",
+      "evidence": "editing/edit-apply-formats/results.json",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "results.json stores only status/seconds/error per (scenario, applier) cell - see the editing-missing-trailing-newline check - so the 4 lone-LF lines in Cline's CRLF output and the ~13 ms bun subprocess overhead cannot be recounted offline. Reproducing them needs the vendored Cline applier run under bun."
+      }
+    },
+    {
+      "id": "editing-environment",
+      "claim": "Environment: git 2.43.0, GNU patch 2.7.6 (patch -u -F2 -p1), aider-chat 0.84.0, openhands-aci 0.3.3 OHEditor, the two vendored appliers (pinned, machine-checked above) and bun 1.3.14.",
+      "value": "5 installed versions",
+      "metric": "versions reported by the installed appliers and tools",
+      "method": "read from the tools' own version output on the bench machine; results.json records outcomes, timings and token counts but no version strings.",
+      "repro": "git --version; patch --version; .venv/bin/pip show aider-chat openhands-aci; bun --version",
+      "evidence": "editing/edit-apply-formats/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the versions come from the venv and binaries installed on the bench machine; a clean checkout installs none of them (aider and openhands need pip plus the network, bun needs its installer). The vendored appliers' commit pins are machine-checked in editing-vendored-pins."
+      }
+    },
+    {
+      "id": "documents-environment",
+      "claim": "Environment: Python 3.12.8, poppler 24.02.0 (pdftotext), pymupdf4llm 1.28.2 (pymupdf + pymupdf-layout 1.28.2), markitdown 0.1.7 (pdfminer.six 20260107), docling 2.120.3, marker-pdf 2.0.0, reportlab 5.0.0, tiktoken 0.9.0.",
+      "value": "9 tool versions",
+      "metric": "versions reported by the installed converters and generators",
+      "method": "read from the tools' own version output in their venvs; results.json records scores, timings and token counts but no version strings.",
+      "repro": "pdftotext -v; .venv/bin/pip show pymupdf4llm markitdown reportlab tiktoken; /path/to/venv-docling/bin/pip show docling",
+      "evidence": "documents/pdf-to-markdown/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the versions come from the converter venvs built for this run; a clean checkout installs none of them (docling alone is ~5.5 GB and needs the network), so the table cannot be re-derived offline. The sizes of those venvs are manual too, in documents-install-footprints."
+      }
+    },
+    {
+      "id": "intent-search-environment",
+      "claim": "Environment: zvec-grep 0.2.1 with the local 32M-parameter potion embedding model, ripgrep 14.1.1 (the shared static binary from the code-search suite), tiktoken 0.9.0 and Python 3.12.8.",
+      "value": "zg 0.2.1 / potion-retrieval-32m / rg 14.1.1",
+      "metric": "versions reported by the CLI tools used for the run",
+      "method": "read from the tools on the bench machine; results.json records the embedding, tokenizer, mode and limit the run used (machine-checked in intent-search-harness-config) but no CLI versions.",
+      "repro": "cd retrieval/intent-search && zg --version; ../code-search/bin/rg --version; ../../.venv/bin/pip show tiktoken",
+      "evidence": "retrieval/intent-search/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the zg release and the Node/ripgrep paths are properties of the machine that ran the suite (zg is not vendored and the corpus it indexes is gitignored); a clean checkout has neither zg nor the rg binary, so only the config results.json records can be checked offline."
+      }
+    },
+    {
+      "id": "code-search-fetched-binaries-size",
+      "claim": "The pinned binaries fetch_tools.sh downloads amount to ~10 MB into the gitignored bin/.",
+      "value": "~10 MB",
+      "metric": "download size of the two pinned release tarballs",
+      "method": "measured when fetching the two pinned archives; the fetched files are gitignored and their exact size depends on the release artifacts.",
+      "repro": "cd retrieval/code-search && ./fetch_tools.sh && du -sh bin/",
+      "evidence": "retrieval/code-search/fetch_tools.sh",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "bin/ is gitignored and the figure is the compressed size of two release tarballs fetched over the network (ripgrep 14.1.1 musl and the uctags 2026.08.18 nightly), so it cannot be re-measured offline. The pins themselves are machine-checked in code-search-fetched-binaries."
+      }
+    },
+    {
+      "id": "browser-vendor-speed-claim",
+      "claim": "ego's official 2.5x speed claim against Vercel's agent-browser: the README states this suite neither confirms nor refutes it.",
+      "value": "2.5x (ego's own figure)",
+      "metric": "the vendor's marketing comparison",
+      "method": "quoted from ego's published comparison table; this suite ran scripted tasks, not LLM planning, and measures no such speed-up.",
+      "repro": "grep -n '2.5' browser/ego-lite-vs-browser-use/README.md",
+      "evidence": "browser/ego-lite-vs-browser-use/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "it is the vendor's figure, not a measurement of this repository: ego compares itself with Vercel's agent-browser while describing a multi-step task as code, which this suite never exercised. No committed artifact carries the number, and a re-run could only reproduce ego's own methodology, not this benchmark's."
+      }
+    },
+    {
+      "id": "intent-search-vendor-claim",
+      "claim": "zvec-grep's headline claim that intent-based retrieval cuts agent tool calls by 40-58%: the README states this benchmark does not measure agent loops and bounds, but does not determine, that claim.",
+      "value": "40-58% (zg's own figure)",
+      "metric": "the vendor's tool-call-reduction comparison",
+      "method": "quoted from zg's marketing; this suite measures single-shot hit rate and token cost with no LLM in the loop.",
+      "repro": "grep -n '40–58%' retrieval/intent-search/README.md",
+      "evidence": "retrieval/intent-search/README.md",
+      "as_of": "2026-09-13",
+      "check": {
+        "manual": "the figure is the vendor's advertising for multi-turn agent loops; this benchmark measures single-shot retrieval with no agent and no LLM, so the number has no artifact here and cannot be recomputed by the gate. The claims that are this suite's own measurements are all machine-checked."
+      }
+    }
+  ]
+}
